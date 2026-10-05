@@ -7,6 +7,7 @@ import sys
 
 from . import __version__
 from .checks.packages import check_packages
+from .checks.risky import check_risky
 from .checks.secrets import check_secrets
 from .diff import git_diff, parse_diff
 from .findings import Severity
@@ -52,21 +53,28 @@ def main(argv: list[str] | None = None) -> int:
         print(f"agentshield: {e}", file=sys.stderr)
         return 2
 
-    files = [f for f in parse_diff(text) if not f.is_deleted]
+    # Deleted files are kept: the risky-change check needs to see deleted tests.
+    files = parse_diff(text)
+    if text.strip() and not files:
+        # Saying "CLEAN" about something we couldn't read would be a lie.
+        print("agentshield: input is not a unified diff (expected 'diff --git' headers)",
+              file=sys.stderr)
+        return 2
+    scanned = len([f for f in files if not f.is_deleted])
     registry = None if args.offline else Registry()
     findings, notes = check_packages(files, registry, repo_root=args.repo)
     # The other checks only need the diff. Each returns (findings, notes).
-    for check in (check_secrets,):
+    for check in (check_secrets, check_risky):
         more_findings, more_notes = check(files)
         findings += more_findings
         notes += more_notes
 
     if args.format == "json":
-        out = render_json(findings, notes, len(files))
+        out = render_json(findings, notes, scanned)
     elif args.format == "markdown":
-        out = render_markdown(findings, notes, len(files))
+        out = render_markdown(findings, notes, scanned)
     else:
-        out = render_text(findings, notes, len(files), color=False if args.no_color else None)
+        out = render_text(findings, notes, scanned, color=False if args.no_color else None)
     sys.stdout.write(out)
 
     # Exit code lets CI block the merge: 0 = pass, 1 = problems found.

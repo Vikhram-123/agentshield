@@ -2,7 +2,7 @@ import io
 import json
 import os
 import unittest
-from contextlib import redirect_stdout
+from contextlib import redirect_stderr, redirect_stdout
 
 from agentshield import cli
 
@@ -33,6 +33,18 @@ class CliTest(unittest.TestCase):
         self.assertIn("Fix:", text)
         _, md = self.run_cli("--format", "markdown")
         self.assertIn("| Issue |", md)
+
+    def test_non_diff_input_is_an_error_not_clean(self):
+        import tempfile
+        with tempfile.NamedTemporaryFile("w", suffix=".diff", delete=False) as fh:
+            fh.write("<!DOCTYPE html><html>Not Found</html>")
+        try:
+            buf = io.StringIO()
+            with redirect_stdout(buf), redirect_stderr(io.StringIO()):
+                code = cli.main(["scan", "--diff", fh.name, "--offline"])
+            self.assertEqual((code, buf.getvalue()), (2, ""))
+        finally:
+            os.unlink(fh.name)
 
 
 if __name__ == "__main__":

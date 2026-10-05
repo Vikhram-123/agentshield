@@ -130,6 +130,44 @@ Each entry: the choice, the alternatives, and why.
   character. Anchoring the name plus a cheap keyword pre-check → 3.3s
   (≈7µs/line; a big PR is milliseconds).
 
+## Step 3: risky-change rules (`checks/risky.py`)
+
+### 18. "A human should look" is the main severity
+- Nothing in this check is wrong for certain: dropping a column or calling
+  `eval` can be deliberate. So most rules are MEDIUM (look at this) or LOW
+  (FYI). Only destructive migrations are HIGH, because data loss can't be undone.
+- *Alternative:* block on all of them. That would train people to ignore the
+  tool, and a security tool that gets ignored is worse than none.
+
+### 19. Removed lines now carry a position
+- `FileDiff.removed` used to be plain strings. To say "an auth check was
+  removed **here**", each removed line now records the new-file line it sat
+  above (the same idea GitHub uses to place comments on deletions).
+- Deleted files are now passed to the checks (the CLI used to drop them),
+  because "a whole test file was deleted" is exactly what we want to see.
+
+### 20. Rule-by-rule false-positive guards
+| Rule | Guard against noise |
+|---|---|
+| auth guard removed | not if the same line (ignoring whitespace) was re-added: that's a move |
+| auth file changed | path words like `auth`, `login`, `permission`; **not** `author` or `session` (usually a DB session) |
+| destructive migration | skipped inside `downgrade()` / `exports.down` / `*.down.sql`: dropping in the undo step just reverses a create |
+| destructive migration | SQL needs `DROP TABLE`/`TRUNCATE TABLE` (not English "truncate"); Rails `drop_table` only at line start (not `def drop_table`) |
+| test deleted | not if a test with the same name was added back (edited, not removed) |
+| test skipped | unconditional skips and `.only` only; `skipIf(platform)` is legitimate |
+| no tests | only when ≥ 10 non-blank source lines were added and *no* test file changed |
+| insecure setting / dangerous call | not in tests, fixtures or docs; not on comment lines; `model.eval()`, `ast.literal_eval`, `yaml.load(..., Loader=SafeLoader)` and nodemailer's `secure: false` don't count |
+- Each guard has a test in `tests/test_risky.py` (`test_safe_lookalikes`,
+  `test_downgrade_reversals_are_normal`, ...).
+- Regexes use `(?<![\w.])eval\(` so a *method* called eval (PyTorch's
+  `model.eval()`) doesn't match: the lookbehind forbids a dot or letter before it.
+
+### 21. Unreadable input is an error, not "CLEAN"
+- While spot-checking real PRs, one download was an HTML page instead of a
+  diff, and AgentShield said "Risk 0/100 (CLEAN)". Now non-empty input that
+  contains no diff exits with code 2 and an error. An empty diff is still fine
+  (nothing changed = nothing to report).
+
 ## Open questions (to decide with data)
 - Should plain hardcoded passwords (`password = "hunter2"`, low entropy) be
   flagged? Currently not: test code is full of them.

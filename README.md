@@ -16,9 +16,16 @@ malware ("slopsquatting"). AgentShield scans a code change and flags:
 | Leaked API key (AWS, GitHub, OpenAI, Anthropic, Stripe, Slack, private keys, DB URLs) | `AKIA...` in `config.py` | HIGH |
 | Random-looking value in a secret-named variable | `api_key = "q8Zr..."` | MEDIUM |
 
+| Destructive migration | `DROP TABLE`, `op.drop_column`, `RemoveField` (not in `downgrade()`) | HIGH |
+| Access check removed | `@login_required` deleted from a view | MEDIUM |
+| Test deleted, skipped or `.only`'d | `@pytest.mark.skip`, `it.only(` | MEDIUM |
+| Security setting turned off | `verify=False`, `DEBUG = True`, CORS `"*"`, `@csrf_exempt` | MEDIUM |
+| Dangerous call | `eval`, `exec`, `shell=True`, `pickle.loads`, `yaml.load` | MEDIUM |
+| Auth code touched / source changed without tests | `app/auth/session.py` | LOW |
+
 Secrets are masked in every report (`AKIA********`).
 
-*Coming next: risky auth/database changes, deleted tests, GitHub Action.*
+*Coming next: config file, GitHub Action.*
 
 ## Install
 

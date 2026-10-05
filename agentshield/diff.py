@@ -25,7 +25,10 @@ HUNK_RE = re.compile(r"^@@ -\d+(?:,\d+)? \+(\d+)(?:,\d+)? @@")
 
 
 @dataclass
-class AddedLine:
+class Line:
+    # Added line: its line number in the new file.
+    # Removed line: the new-file line it used to sit just above, so a report
+    # can point reviewers to where something was taken out.
     number: int
     text: str
 
@@ -34,8 +37,8 @@ class AddedLine:
 class FileDiff:
     path: str                 # path in the new version ("b/" side)
     old_path: str | None      # None when the file is brand new
-    added: list[AddedLine] = field(default_factory=list)
-    removed: list[str] = field(default_factory=list)
+    added: list[Line] = field(default_factory=list)
+    removed: list[Line] = field(default_factory=list)
     is_deleted: bool = False
 
     @property
@@ -80,10 +83,10 @@ def parse_diff(text: str) -> list[FileDiff]:
         if not in_hunk:
             continue  # metadata like "index abc..def" or "new file mode"
         if raw.startswith("+"):
-            current.added.append(AddedLine(new_line, raw[1:]))
+            current.added.append(Line(new_line, raw[1:]))
             new_line += 1
         elif raw.startswith("-"):
-            current.removed.append(raw[1:])
+            current.removed.append(Line(new_line, raw[1:]))
         elif raw.startswith("\\"):
             pass  # "\ No newline at end of file"
         else:

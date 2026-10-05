@@ -25,6 +25,7 @@ from dataclasses import dataclass
 
 from ..diff import FileDiff
 from ..findings import Finding, Severity
+from ..paths import is_fixture_path, is_test_path
 
 ROTATE = "it's in git history now, so deleting the line is not enough"
 
@@ -188,12 +189,6 @@ def looks_random(value: str) -> bool:
 SKIP_FILES = {"package-lock.json", "yarn.lock", "pnpm-lock.yaml", "poetry.lock",
               "pipfile.lock", "cargo.lock", "go.sum", "composer.lock", "uv.lock"}
 SKIP_EXTS = (".min.js", ".min.css", ".map", ".svg", ".lock")
-TEST_DIR_RE = re.compile(r"(^|/)(tests?|__tests__|spec|fixtures?|testdata|mocks?|examples?)/", re.I)
-TEST_FILE_RE = re.compile(r"(^|/)(test_[^/]*|[^/]*_test\.\w+|[^/]*\.(test|spec)\.\w+|[^/]*\.(example|sample|template))$", re.I)
-
-
-def is_test_path(path: str) -> bool:
-    return bool(TEST_DIR_RE.search(path) or TEST_FILE_RE.search(path))
 
 
 def mask(secret: str) -> str:
@@ -211,7 +206,7 @@ def check_secrets(files: list[FileDiff]) -> tuple[list[Finding], list[str]]:
         base = os.path.basename(f.path).lower()
         if base in SKIP_FILES or base.endswith(SKIP_EXTS):
             continue
-        in_test = is_test_path(f.path)
+        in_test = is_test_path(f.path) or is_fixture_path(f.path)
         bare_ok = base.startswith(".env") or base.endswith(BARE_OK_EXTS)
         for added in f.added:
             line_findings = _scan_line(f.path, added.number, added.text, bare_ok, in_test)

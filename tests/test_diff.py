@@ -35,7 +35,8 @@ class ParseDiffTest(unittest.TestCase):
     def test_line_numbers_follow_hunk_header(self):
         added = self.files["a.py"].added
         self.assertEqual([(a.number, a.text) for a in added], [(11, "    new1"), (12, "    new2")])
-        self.assertEqual(self.files["a.py"].removed, ["    old"])
+        removed = self.files["a.py"].removed
+        self.assertEqual([(r.number, r.text) for r in removed], [(11, "    old")])
 
     def test_deleted_and_new_files(self):
         self.assertTrue(self.files["gone.py"].is_deleted)
