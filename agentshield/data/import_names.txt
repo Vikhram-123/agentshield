@@ -39,3 +39,4 @@ email_validator email-validator
 kafka kafka-python
 mpl_toolkits matplotlib
 IPython ipython
+ruamel ruamel.yaml

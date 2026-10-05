@@ -49,6 +49,23 @@ Each entry: the choice, the alternatives, and why.
 - HIGH 40, MEDIUM 15, LOW 5, capped at 100. Simple, explainable, and easy to
   tune later once there's benchmark data.
 
+### 10. Live check of step 1 against real PyPI/npm
+- *What I ran:* the sample PR (`tests/fixtures/ai_pr.diff`) with no fake
+  registry, plus a "control" diff of real but less-popular packages
+  (`django-ninja`, `zope.interface`, `@tanstack/react-query`, `bs4`, ...).
+- *Result:* every verdict matched a manual `curl` of the registry API, and
+  `lodahs` turned out to be a real npm malware takedown. The control diff
+  found one false positive: `import ruamel.yaml` was looked up as `ruamel`,
+  a namespace rather than a package. I fixed it with a mapping line plus a regression test.
+- *Lesson:* fake registries prove the logic. Only real data shows which import
+  names don't match their package names.
+
+### 11. Python 3.10 is a hard minimum
+- `sys.stdlib_module_names` (the list of standard-library modules) only exists
+  from 3.10. On 3.9 the stdlib filter is silently empty and `import os` gets
+  flagged. macOS ships 3.9, so `pyproject.toml`'s `requires-python = ">=3.10"`
+  matters: pip refuses to install on 3.9 instead of producing junk.
+
 ## Open questions (to decide with data)
 - Is 30 days the right "new package" cutoff?
 - Should download counts factor in? (Needs a stats API.)

@@ -45,6 +45,13 @@ class ExtractTest(unittest.TestCase):
         names = {d.name for d in extract_dependencies(parse_diff(diff), set())}
         self.assertEqual(names, {"uvicorn", "Django"})
 
+    def test_namespace_import_maps_to_real_package(self):
+        # Found by live testing: "import ruamel.yaml" has top-level name "ruamel",
+        # which is not a package. The mapping file must send it to ruamel.yaml.
+        diff = "diff --git a/a.py b/a.py\n--- a/a.py\n+++ b/a.py\n@@ -0,0 +1 @@\n+import ruamel.yaml\n"
+        names = {d.name for d in extract_dependencies(parse_diff(diff), set())}
+        self.assertEqual(names, {"ruamel.yaml"})
+
 
 class CheckPackagesTest(unittest.TestCase):
     def setUp(self):
