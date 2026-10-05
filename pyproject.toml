@@ -1,15 +1,33 @@
 [build-system]
-requires = ["setuptools>=61"]
+requires = ["setuptools>=77"]
 build-backend = "setuptools.build_meta"
 
 [project]
+# NOTE: "agentshield" is already taken on PyPI by an unrelated project, so the
+# distribution name must change before publishing (see DECISIONS.md #41).
+# The command and the import name can stay "agentshield".
 name = "agentshield"
 version = "0.1.0"
 description = "Catch hallucinated packages, leaked secrets and risky changes in AI-written code before it merges."
 readme = "README.md"
 requires-python = ">=3.11"
-license = { text = "MIT" }
-dependencies = []  # standard library only, on purpose (see DECISIONS.md)
+license = "MIT"
+license-files = ["LICENSE"]
+authors = [{ name = "Vikhram", email = "vb181@duke.edu" }]
+keywords = ["security", "code-review", "ai", "secrets", "supply-chain", "slopsquatting", "github-action"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Environment :: Console",
+    "Intended Audience :: Developers",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Security",
+    "Topic :: Software Development :: Quality Assurance",
+]
+dependencies = []  # standard library only, on purpose (see DECISIONS.md #3)
 
 [project.scripts]
 agentshield = "agentshield.cli:main"

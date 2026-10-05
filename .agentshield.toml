@@ -1,0 +1,4 @@
+# AgentShield's settings for its own repo (it scans its own pull requests).
+# bench/ deliberately contains planted problems (planted.py) and results that
+# quote real findings, so scanning it would only report our own test data.
+ignore_paths = ["bench/"]

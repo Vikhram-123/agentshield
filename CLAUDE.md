@@ -71,4 +71,4 @@ Every check is a function that takes `list[FileDiff]` and returns
 6. [DONE: labels need Vikhram's spot-check] Benchmark (bench/): collect ~150 real public PRs (include AI-assisted ones),
    run AgentShield, hand-label findings, report precision/recall + scan time.
    These numbers go on the resume. Be honest about false positives.
-7. Polish: README with demo GIF, PyPI release, clean commit history.
+7. [DONE except publishing: PyPI name is taken, see DECISIONS #41] Polish: README with demo GIF, PyPI release, clean commit history.

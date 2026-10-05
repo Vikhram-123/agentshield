@@ -364,6 +364,43 @@ problems (upper bound)**, median scan ~10 ms plus network.
   before labeling) and a reason per finding. **Vikhram must spot-check them
   before using the numbers on a resume.**
 
+## Step 7: polish
+
+### 41. The PyPI name "agentshield" is taken
+- An unrelated project ("Security and monitoring for AI agents") already owns
+  `agentshield` on PyPI. Telling people to `pip install agentshield` would
+  install *someone else's code*, the exact confusion this tool warns about.
+- So the README installs from source, and publishing waits on picking a free
+  distribution name (the command and import can stay `agentshield`, like
+  `pip install beautifulsoup4` / `import bs4`). Checked free at the time:
+  `agent-shield`, `pr-agentshield`, `agentshield-scan`. **Vikhram's decision.**
+
+### 42. The demo GIF is real output
+- `examples/record_demo.py` runs the installed CLI on the demo PR inside a
+  pseudo-terminal (so colours and wrapping are exactly what a user sees) and
+  writes an asciinema cast; `agg` renders the GIF. No screen recording, no
+  editing, and anyone can regenerate it.
+- The demo PR is generated at runtime (`examples/demo.py`), so the fake Stripe
+  key never sits in the repo as a key-shaped string (#16). A test runs the
+  demo, so the README can't silently go stale.
+
+### 43. Word-wrapped text output
+- Recording the GIF showed long messages wrapping mid-word ("da/ta is gone")
+  and the risk headline scrolling off. The text report now wraps at word
+  boundaries (max 100 columns) with a hanging indent under "Fix:".
+
+### 44. Packaging checked without publishing
+- Built the sdist and wheel, `twine check` passes, the wheel contains only
+  the package + its data files, and a fresh Python 3.11 venv installed it and
+  ran a scan from an unrelated directory (data files load via
+  `importlib.resources`, not relative paths).
+- Added the MIT `LICENSE` text (pyproject only named the licence before).
+
+### 45. The repo scans itself with its own config
+- `.agentshield.toml` ignores `bench/`, which holds deliberately planted
+  problems and results that quote findings. The report still says "15 file(s)
+  skipped by ignore_paths", so the exclusion is visible (#24).
+
 ## Open questions (to decide with data)
 - `risky.no-tests` is most of the findings (79% precision). Should it be off
   by default, or only fire when the repo already has tests?

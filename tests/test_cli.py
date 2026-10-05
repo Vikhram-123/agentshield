@@ -1,6 +1,7 @@
 import io
 import json
 import os
+import tempfile
 import unittest
 from contextlib import redirect_stderr, redirect_stdout
 
@@ -35,7 +36,6 @@ class CliTest(unittest.TestCase):
         self.assertIn("| Issue |", md)
 
     def test_non_diff_input_is_an_error_not_clean(self):
-        import tempfile
         with tempfile.NamedTemporaryFile("w", suffix=".diff", delete=False) as fh:
             fh.write("<!DOCTYPE html><html>Not Found</html>")
         try:
@@ -45,6 +45,25 @@ class CliTest(unittest.TestCase):
             self.assertEqual((code, buf.getvalue()), (2, ""))
         finally:
             os.unlink(fh.name)
+
+    def test_readme_demo_still_works(self):
+        """examples/demo.py is in the README and the GIF: keep it honest."""
+        import importlib.util
+        path = os.path.join(os.path.dirname(__file__), "..", "examples", "demo.py")
+        spec = importlib.util.spec_from_file_location("demo", path)
+        demo = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(demo)
+        with tempfile.TemporaryDirectory() as tmp:
+            diff = os.path.join(tmp, "pr.diff")
+            with open(diff, "w") as fh:
+                fh.write(demo.demo_diff())
+            buf = io.StringIO()
+            with redirect_stdout(buf):
+                code = cli.main(["scan", "--diff", diff, "--offline", "--repo", tmp, "--format", "json"])
+        rules = {f["rule"] for f in json.loads(buf.getvalue())["findings"]}
+        self.assertEqual(code, 1)
+        self.assertTrue({"secret.stripe-key", "risky.destructive-migration", "package.typosquat",
+                         "risky.insecure-setting", "risky.dangerous-call", "risky.test-skipped"} <= rules)
 
 
 if __name__ == "__main__":

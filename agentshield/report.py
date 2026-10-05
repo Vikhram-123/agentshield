@@ -4,7 +4,9 @@ from __future__ import annotations
 
 import json
 import os
+import shutil
 import sys
+import textwrap
 
 from .findings import Finding, Severity, risk_label, risk_score
 
@@ -23,10 +25,16 @@ def _loc(f: Finding) -> str:
 
 
 def render_text(findings: list[Finding], notes: list[str], files_scanned: int,
-                color: bool | None = None) -> str:
+                color: bool | None = None, width: int | None = None) -> str:
     if color is None:
         color = sys.stdout.isatty() and "NO_COLOR" not in os.environ
     c = (lambda code, s: f"{code}{s}{RESET}") if color else (lambda code, s: s)
+    # Wrap at word boundaries (max 100 columns: long lines are hard to read).
+    width = width or min(100, shutil.get_terminal_size((100, 24)).columns)
+
+    def wrap(text: str, first: str, rest: str = "  ") -> str:
+        return "\n".join(textwrap.wrap(text, width, initial_indent=first, subsequent_indent=rest,
+                                        break_on_hyphens=False)) or first
 
     score = risk_score(findings)
     label = risk_label(score)
@@ -38,11 +46,11 @@ def render_text(findings: list[Finding], notes: list[str], files_scanned: int,
     for f in _sorted(findings):
         tag = f.rule.upper().replace(".", " ").replace("-", " ")
         lines.append(c(COLORS[f.severity] + BOLD, f"{ICONS[f.severity]} {tag}") + f"   {_loc(f)}")
-        lines.append(f"  {f.message}")
-        lines.append(c(DIM, f"  Fix: {f.fix}"))
+        lines.append(wrap(f.message, "  "))
+        lines.append(c(DIM, wrap(f.fix, "  Fix: ", "       ")))
         lines.append("")
     for n in notes:
-        lines.append(c(DIM, f"note: {n}"))
+        lines.append(c(DIM, wrap(n, "note: ", "      ")))
     return "\n".join(lines).rstrip() + "\n"
 
 
