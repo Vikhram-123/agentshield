@@ -66,7 +66,7 @@ Every check is a function that takes `list[FileDiff]` and returns
    DEBUG=True, CORS "*"), dangerous calls (eval, exec, shell=True, pickle.loads).
 4. [DONE] Config file `.agentshield.toml` (ignore paths, allowlist packages, thresholds)
    + inline `# agentshield: ignore` comments.
-5. [DONE, untested on GitHub until pushed] GitHub Action (action.yml + workflow) that runs on PRs and posts the
+5. [DONE, verified on GitHub: PR #1] GitHub Action (action.yml + workflow) that runs on PRs and posts the
    markdown report as a comment.
 6. [DONE: labels need Vikhram's spot-check] Benchmark (bench/): collect ~150 real public PRs (include AI-assisted ones),
    run AgentShield, hand-label findings, report precision/recall + scan time.
