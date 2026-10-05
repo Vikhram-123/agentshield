@@ -54,6 +54,16 @@ class ExtractTest(unittest.TestCase):
         names = {d.name for d in extract_dependencies(parse_diff(diff), local, workspace)}
         self.assertEqual(names, {"@types/zod-fake", "totally-unknown-pkg"})
 
+    def test_held_out_false_positives(self):
+        # Found in the benchmark's held-out set, fixed after its numbers were recorded.
+        diff = ("diff --git a/badge.tsx b/badge.tsx\n--- a/badge.tsx\n+++ b/badge.tsx\n@@ -0,0 +1,2 @@\n"
+                "+ * a distinct label from \"Sponsored\" since a Featured listing is\n"
+                "+// copied from 'somewhere-else'\n"
+                "diff --git a/agent.py b/agent.py\n--- a/agent.py\n+++ b/agent.py\n@@ -0,0 +1 @@\n"
+                "+    import paho.mqtt.client as mqtt\n")
+        names = {d.name for d in extract_dependencies(parse_diff(diff), set())}
+        self.assertEqual(names, {"paho-mqtt"})
+
     def test_workspace_package_in_manifest(self):
         diff = ("diff --git a/package.json b/package.json\n--- a/package.json\n+++ b/package.json\n"
                 "@@ -1 +1,2 @@\n {\n+    \"vitest-config\": \"5.56.0\",\n")

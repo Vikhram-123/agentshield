@@ -40,3 +40,15 @@ kafka kafka-python
 mpl_toolkits matplotlib
 IPython ipython
 ruamel ruamel.yaml
+paho paho-mqtt
+MySQLdb mysqlclient
+nacl pynacl
+Bio biopython
+googleapiclient google-api-python-client
+grpc grpcio
+faiss faiss-cpu
+OpenGL pyopengl
+Xlib python-xlib
+dns dnspython
+github pygithub
+ldap python-ldap

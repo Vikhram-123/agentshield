@@ -22,6 +22,8 @@ Labels were assigned by Claude and still need a human spot-check (see `LABELING.
 | medium | 2 | 2 | 50% |
 | low | 16 | 4 | 80% |
 
+**After the fact:** the held-out set exposed 3 more bugs (English in a JS comment read as an import, `import paho` → `paho-mqtt` missing from the name map, a `test-harness/` folder not seen as tests). Fixing them removed exactly those 3 false positives and nothing else: 18/22 = 82% (95% CI 61%-93%) on the same PRs. That number is no longer held-out, so the 72% above stays the headline.
+
 ### Findings by group
 
 | Group | PRs | PRs with ≥1 finding | Findings per 1,000 diff lines |

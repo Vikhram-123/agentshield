@@ -346,7 +346,20 @@ problems (upper bound)**, median scan ~10 ms plus network.
   picked, so the collector now waits and retries, and the test set was
   re-collected (before the tool was run on it).
 
-### 39. Who labeled
+### 39. Bugs found by the held-out set are fixed *after* recording its numbers
+- The test set exposed 3 more false-positive causes (English in a JS
+  comment read as an import, `paho` → `paho-mqtt` missing from the map, a
+  `test-harness/` folder not seen as tests). They were fixed in a separate
+  commit, after the 72% was recorded, and re-checked: exactly those 3 findings
+  disappeared, nothing else changed on either set (82% on the same PRs).
+- That 82% is not reported as the headline, because the set stopped being
+  held-out the moment I fixed things using it. The next honest number needs
+  a fresh set (e.g. October PRs).
+- While adding import-name mappings I checked each against PyPI: `nacl`,
+  `grpc`, `dns`, `github`, `Bio`... are *also* registered as unrelated packages.
+  Without a mapping, the age/typo checks would inspect the wrong package.
+
+### 40. Who labeled
 - Labels are by Claude, with written criteria (`bench/LABELING.md`, fixed
   before labeling) and a reason per finding. **Vikhram must spot-check them
   before using the numbers on a resume.**

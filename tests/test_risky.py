@@ -133,6 +133,9 @@ class TestChangesTest(unittest.TestCase):
                                make_diff("tests/test_core.py", ["def test_x(): pass"])), [])
         # Tiny change: fine.
         self.assertEqual(rules(make_diff("app/core.py", code[:3])), [])
+        # A test harness folder counts as tests (held-out benchmark false positive).
+        self.assertEqual(rules(make_diff("app/core.py", code),
+                               make_diff("test-harness/translate_harness.mjs", ["run()"])), [])
         # Docs and config don't count as source.
         self.assertEqual(rules(make_diff("README.md", code), make_diff("conf.yml", code)), [])
 

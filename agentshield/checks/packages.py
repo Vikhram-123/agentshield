@@ -131,6 +131,8 @@ def extract_dependencies(files: list[FileDiff], local_modules: set[str],
             elif f.path.endswith(".py"):
                 deps += _from_python(f.path, added.number, line, local_modules)
             elif f.path.endswith(JS_EXTS):
+                if line.lstrip().startswith(("*", "//", "/*")):
+                    continue  # comment prose like 'a label from "Sponsored"' isn't an import
                 deps += _from_js(f.path, added.number, line, local_modules, workspace)
     return _dedupe(deps)
 

@@ -9,7 +9,8 @@ from __future__ import annotations
 import re
 
 # Real tests: these are what a "did the PR touch tests?" question cares about.
-TEST_DIR_RE = re.compile(r"(^|/)(tests?|__tests__|spec|specs)/", re.I)
+# tests/, test/, test-harness/, test_utils/, __tests__/, spec/, e2e/ ...
+TEST_DIR_RE = re.compile(r"(^|/)(tests?([-_][\w-]+)?|__tests__|specs?|e2e|testing)/", re.I)
 TEST_FILE_RE = re.compile(
     r"(^|/)(test_[^/]*\.\w+|[^/]*_test\.\w+|[^/]*Tests?\.(java|kt|cs|swift)|"
     r"[^/]*\.(test|spec)\.\w+|conftest\.py)$")

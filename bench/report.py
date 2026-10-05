@@ -129,6 +129,7 @@ def main() -> int:
         return init_labels()
     labels = load_labels()
     test = load_json("results_test.json") or []
+    test_after = load_json("results_test_after.json") or []
     dev = load_json("results_dev.json") or []
     dev_before = load_json("dev/results_before.json") or []
     planted = (load_json("planted_results.json") or {}).get("results", [])
@@ -145,6 +146,14 @@ def main() -> int:
                 "all tuning was finished and scanned once with the frozen tool. Diff size: "
                 f"median {statistics.median(lines):.0f} lines, max {max(lines)}.", ""]
         out += precision_tables(test, labels)
+        if test_after:
+            t = sum(tally(test_after, labels)[0].values(), Counter())
+            out += ["", "**After the fact:** the held-out set exposed 3 more bugs (English "
+                    "in a JS comment read as an import, `import paho` → `paho-mqtt` missing "
+                    "from the name map, a `test-harness/` folder not seen as tests). Fixing them "
+                    f"removed exactly those 3 false positives and nothing else: "
+                    f"{rate(t['TP'], t['TP'] + t['FP'])} on the same PRs. That number is no "
+                    "longer held-out, so the 72% above stays the headline."]
         out += ["", "### Findings by group", ""] + dataset_table(test)
         out += ["", "Groups differ in repo size, language and PR size, so this describes the "
                 "sample; it is not evidence that AI-written code is riskier."]

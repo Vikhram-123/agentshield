@@ -2,6 +2,7 @@
 
     python bench/run.py dev       # writes bench/results_dev.json
     python bench/run.py test      # writes bench/results_test.json
+    python bench/run.py test results_test_after.json   # a later run, kept separate
 
 Each PR gets a fresh Registry (empty cache), like a real CI run, and real
 PyPI/npm lookups. Time is wall-clock for the whole scan, network included.
@@ -66,7 +67,8 @@ def main() -> int:
         })
         print(f"[{i}] {pr['id']}: {len(findings)} finding(s), {seconds:.2f}s", file=sys.stderr)
 
-    with open(os.path.join(HERE, f"results_{which}.json"), "w") as fh:
+    out_name = sys.argv[2] if len(sys.argv) > 2 else f"results_{which}.json"
+    with open(os.path.join(HERE, out_name), "w") as fh:
         json.dump(results, fh, indent=1)
     times = [r["seconds"] for r in results]
     print(f"{len(results)} PRs, {sum(len(r['findings']) for r in results)} findings, "
