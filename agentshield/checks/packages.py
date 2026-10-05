@@ -22,6 +22,7 @@ import sys
 from concurrent.futures import ThreadPoolExecutor
 from dataclasses import dataclass
 from datetime import datetime
+from typing import Callable
 from importlib import resources
 
 from ..diff import FileDiff
@@ -195,10 +196,17 @@ def find_local_modules(repo_root: str, files: list[FileDiff]) -> set[str]:
 
 def check_packages(files: list[FileDiff], registry: Registry | None,
                    repo_root: str = ".", now: datetime | None = None,
+                   new_package_days: int = NEW_PACKAGE_DAYS,
+                   is_allowed: Callable[[str], bool] = lambda name: False,
                    ) -> tuple[list[Finding], list[str]]:
-    """Returns (findings, notes). Notes are things we couldn't verify."""
+    """Returns (findings, notes). Notes are things we couldn't verify.
+
+    is_allowed: packages the project vouches for (allow_packages in the
+    config), e.g. private ones that public registries have never heard of.
+    """
     deps = extract_dependencies(files, find_local_modules(repo_root, files))
-    to_lookup = [d for d in deps if normalize(d.name) not in POPULAR[d.ecosystem]]
+    to_lookup = [d for d in deps if normalize(d.name) not in POPULAR[d.ecosystem]
+                 and not is_allowed(d.name)]
 
     infos: dict[Dependency, PackageInfo] = {}
     if registry is not None and to_lookup:
@@ -210,7 +218,7 @@ def check_packages(files: list[FileDiff], registry: Registry | None,
     notes: list[str] = []
     for d in to_lookup:
         info = infos.get(d)
-        f = _judge(d, info, now)
+        f = _judge(d, info, now, new_package_days)
         if f:
             findings.append(f)
         elif info is not None and info.exists is None:
@@ -220,7 +228,8 @@ def check_packages(files: list[FileDiff], registry: Registry | None,
     return findings, notes
 
 
-def _judge(d: Dependency, info: PackageInfo | None, now: datetime | None) -> Finding | None:
+def _judge(d: Dependency, info: PackageInfo | None, now: datetime | None,
+           new_package_days: int) -> Finding | None:
     reg = "PyPI" if d.ecosystem == "pypi" else "npm"
     near = closest(d.name, POPULAR[d.ecosystem])
     hint = f' Did you mean "{near[0]}"?' if near else ""
@@ -243,7 +252,7 @@ def _judge(d: Dependency, info: PackageInfo | None, now: datetime | None) -> Fin
                        "Remove it immediately and check whether it was ever installed.")
 
     age = info.age_days(now) if info else None
-    is_new = age is not None and age < NEW_PACKAGE_DAYS
+    is_new = age is not None and age < new_package_days
 
     if near:
         sev = Severity.HIGH if is_new else Severity.MEDIUM

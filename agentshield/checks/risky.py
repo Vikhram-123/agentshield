@@ -29,8 +29,61 @@ from ..paths import is_fixture_path, is_source_path, is_test_path
 NO_TESTS_MIN_LINES = 10
 
 
+DOC_EXTS = (".md", ".rst", ".txt", ".adoc")
+
+
 def _is_comment(text: str) -> bool:
     return text.lstrip().startswith(("#", "//", "/*", "*", "--", "<!--"))
+
+
+# ------------------------------------------------------------ code vs text
+# `x = eval(s)` is a risk; `msg = "never use eval()"` is just text. These two
+# helpers tell them apart, so a rule only fires when its match starts in code.
+
+def _in_string(text: str, pos: int) -> bool:
+    """Is position `pos` inside a quoted string on this line?"""
+    quote = None
+    i = 0
+    while i < pos:
+        if quote:
+            if text[i] == "\\":
+                i += 2  # skip the escaped character
+                continue
+            if text.startswith(quote, i):
+                i += len(quote)
+                quote = None
+                continue
+            i += 1
+        else:
+            for q in ('"""', "'''", '"', "'", "`"):
+                if text.startswith(q, i):
+                    quote = q
+                    i += len(q)
+                    break
+            else:
+                i += 1
+    return quote is not None
+
+
+def _docstring_lines(lines: list[str]) -> list[bool]:
+    """For each line: is it inside a multi-line Python docstring?
+
+    An odd number of triple quotes on a line opens (or closes) one. Lines in
+    between are prose, not code.
+    """
+    inside = False
+    flags = []
+    for text in lines:
+        toggles = (text.count('"""') + text.count("'''")) % 2 == 1
+        flags.append(inside or toggles)
+        if toggles:
+            inside = not inside
+    return flags
+
+
+def _code_match(rx: re.Pattern, text: str) -> re.Match | None:
+    """First match of rx that starts in code, not inside a string."""
+    return next((m for m in rx.finditer(text) if not _in_string(text, m.start())), None)
 
 
 # ------------------------------------------------------------ authentication
@@ -54,8 +107,7 @@ def _auth_findings(f: FileDiff) -> list[Finding]:
     out: list[Finding] = []
     still_there = Counter(_norm(a.text) for a in f.added)
     for r in f.removed:
-        m = AUTH_GUARD_RE.search(r.text)
-        if not m or _is_comment(r.text):
+        if _is_comment(r.text) or not _code_match(AUTH_GUARD_RE, r.text):
             continue
         key = _norm(r.text)
         if still_there[key] > 0:  # moved or reformatted, not removed
@@ -102,11 +154,15 @@ UP_START_RE = re.compile(r"\bdef\s+(upgrade|up)\b|exports\.up\b|\basync\s+up\s*\
 
 def _migration_findings(f: FileDiff) -> list[Finding]:
     base = os.path.basename(f.path).lower()
-    if is_test_path(f.path) or base.endswith((".down.sql", "_down.sql")) or base == "down.sql":
+    if (is_test_path(f.path) or f.path.endswith(DOC_EXTS)
+            or base.endswith((".down.sql", "_down.sql")) or base == "down.sql"):
         return []
     out: list[Finding] = []
     in_down = False
-    for a in f.added:
+    in_doc = _docstring_lines([a.text for a in f.added])
+    for a, doc in zip(f.added, in_doc):
+        if doc:
+            continue
         if DOWN_START_RE.search(a.text):
             in_down = True
         elif UP_START_RE.search(a.text):
@@ -151,9 +207,10 @@ def _test_findings(f: FileDiff) -> list[Finding]:
                 f'Test "{name}" was removed.',
                 "Check that it was obsolete, not failing. AI tools sometimes delete "
                 "a failing test instead of fixing the code."))
-    for a in f.added:
-        m = SKIP_RE.search(a.text)
-        if m and not _is_comment(a.text):
+    in_doc = _docstring_lines([a.text for a in f.added])
+    for a, doc in zip(f.added, in_doc):
+        m = None if doc or _is_comment(a.text) else _code_match(SKIP_RE, a.text)
+        if m:
             only = ".only" in m.group(0)
             out.append(Finding(
                 "risky.test-skipped", Severity.MEDIUM, f.path, a.number,
@@ -188,23 +245,30 @@ def _no_tests_finding(files: list[FileDiff]) -> list[Finding]:
 
 # ------------------------------------------------------- settings and calls
 
+CORS_RE = re.compile(r"(?i)(Access-Control-Allow-Origin['\"]?\s*[:,]\s*['\"]\*|"
+                     r"CORS_(ORIGIN_)?ALLOW_ALL(_ORIGINS)?\s*=\s*True|"
+                     r"allow_origins\s*=\s*\[\s*['\"]\*['\"]|origins?\s*[:=]\s*['\"]\*['\"]|"
+                     r"\bcors\(\s*\))")
+NODE_TLS_RE = re.compile(r"NODE_TLS_REJECT_UNAUTHORIZED['\"]?\s*\]?\s*=\s*['\"]?0")
+# Settings whose evidence is itself a string ("Access-Control-Allow-Origin",
+# os.environ["NODE_TLS_..."]), so the match may start inside quotes.
+MAY_START_IN_STRING = (CORS_RE, NODE_TLS_RE)
 INSECURE_SETTINGS = [
     (re.compile(r"\bverify\s*=\s*False\b"),
      "TLS certificate checking is turned off (verify=False), allowing man-in-the-middle attacks.",
      "Remove verify=False. If you use a private CA, pass verify='/path/to/ca.pem'."),
     (re.compile(r"\b(ssl\._create_unverified_context|CERT_NONE|check_hostname\s*=\s*False|"
-                r"rejectUnauthorized\s*:\s*false|InsecureSkipVerify\s*:\s*true|"
-                r"NODE_TLS_REJECT_UNAUTHORIZED['\"]?\s*\]?\s*=\s*['\"]?0)"),
+                r"rejectUnauthorized\s*:\s*false|InsecureSkipVerify\s*:\s*true)"),
      "TLS certificate checking is turned off, allowing man-in-the-middle attacks.",
      "Keep certificate verification on; trust a specific CA instead of disabling checks."),
     (re.compile(r"^\s*DEBUG\s*=\s*True\b|\bapp\.run\(.*debug\s*=\s*True"),
      "Debug mode is on. In production this shows stack traces and settings to "
      "anyone (and Flask's debugger allows running code).",
      "Read it from the environment, e.g. DEBUG = os.getenv('DEBUG') == '1'."),
-    (re.compile(r"(?i)(Access-Control-Allow-Origin['\"]?\s*[:,]\s*['\"]\*|"
-                r"CORS_(ORIGIN_)?ALLOW_ALL(_ORIGINS)?\s*=\s*True|"
-                r"allow_origins\s*=\s*\[\s*['\"]\*['\"]|origins?\s*[:=]\s*['\"]\*['\"]|"
-                r"\bcors\(\s*\))"),
+    (NODE_TLS_RE,
+     "Setting NODE_TLS_REJECT_UNAUTHORIZED to 0 turns off TLS certificate checking for the whole Node process.",
+     "Remove it; trust a specific CA with NODE_EXTRA_CA_CERTS instead."),
+    (CORS_RE,
      'CORS allows every website ("*") to call this API from a browser.',
      "List the exact origins that need access."),
     (re.compile(r"ALLOWED_HOSTS\s*=\s*\[\s*['\"]\*['\"]"),
@@ -255,18 +319,20 @@ def _line_rule_findings(f: FileDiff) -> list[Finding]:
     # Tests disable TLS, run eval, use DEBUG=True all the time on purpose.
     if f.is_deleted or is_test_path(f.path) or is_fixture_path(f.path):
         return []
-    if f.path.endswith((".md", ".rst", ".txt")):
+    if f.path.endswith(DOC_EXTS):
         return []  # docs mention these things without doing them
     out: list[Finding] = []
-    for a in f.added:
-        if _is_comment(a.text):
+    in_doc = _docstring_lines([a.text for a in f.added])
+    for a, doc in zip(f.added, in_doc):
+        if doc or _is_comment(a.text):
             continue
         for rx, msg, fix in INSECURE_SETTINGS:
-            if rx.search(a.text):
+            hit = rx.search(a.text) if rx in MAY_START_IN_STRING else _code_match(rx, a.text)
+            if hit:
                 out.append(Finding("risky.insecure-setting", Severity.MEDIUM, f.path, a.number, msg, fix))
                 break
         for rx, name, msg, fix in DANGEROUS_CALLS:
-            if rx.search(a.text):
+            if _code_match(rx, a.text):
                 out.append(Finding("risky.dangerous-call", Severity.MEDIUM, f.path, a.number,
                                    f"{name}: {msg}", fix))
                 break

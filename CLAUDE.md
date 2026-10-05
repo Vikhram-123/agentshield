@@ -30,15 +30,20 @@ agentshield/
   report.py         text / markdown / json renderers
   registry.py       PyPI + npm lookups (injectable fetcher, cached)
   similarity.py     edit distance for typosquat detection
-  checks/packages.py  hallucinated / new / typosquat / malware packages  [DONE]
+  config.py         .agentshield.toml + inline `agentshield: ignore` comments
+  paths.py          is this a test / fixture / source file?
+  checks/packages.py  hallucinated / new / typosquat / malware packages
+  checks/secrets.py   known key formats + entropy, masked output
+  checks/risky.py     auth, migrations, tests, insecure settings, dangerous calls
   data/             popular package lists, import->package name map
-tests/              unittest; fake_registry.py so tests never hit the network
+tests/              unittest; fake_registry.py so tests never hit the network,
+                    helpers.py builds diffs and fake keys at runtime
 ```
 Every check is a function that takes `list[FileDiff]` and returns
 `(list[Finding], list[str] notes)`. cli.py runs all checks and merges results.
 
 ## Conventions
-- Python >= 3.10, **standard library only** (no pip dependencies; see DECISIONS.md #3).
+- Python >= 3.11 (for tomllib; see DECISIONS.md #22), **standard library only** (no pip dependencies; see DECISIONS.md #3).
 - Tests: `python3 -m unittest discover -s tests -t . -v`. Every check needs
   tests, including false-positive cases. Network calls go through an
   injectable function and are faked in tests.
@@ -49,16 +54,16 @@ Every check is a function that takes `list[FileDiff]` and returns
 
 ## Roadmap (do in order, one step per session)
 1. [DONE] Package checker
-2. Secret scanner (checks/secrets.py): regexes for known key formats (AWS,
+2. [DONE] Secret scanner (checks/secrets.py): regexes for known key formats (AWS,
    GitHub, OpenAI, Anthropic, Stripe, Slack, Google, private keys, JWTs,
    DB URLs with passwords) + Shannon-entropy check for unknown high-randomness
    strings. Skip obvious placeholders (xxx, your-key-here, example, test
    fixtures). Mask secrets in output (show first 4 chars only).
-3. Risky-change rules (checks/risky.py): auth/login/permission code changed,
+3. [DONE] Risky-change rules (checks/risky.py): auth/login/permission code changed,
    DB migrations (DROP TABLE, DROP COLUMN), deleted or skipped tests, source
    changed with no test changes, disabled security settings (verify=False,
    DEBUG=True, CORS "*"), dangerous calls (eval, exec, shell=True, pickle.loads).
-4. Config file `.agentshield.toml` (ignore paths, allowlist packages, thresholds)
+4. [DONE] Config file `.agentshield.toml` (ignore paths, allowlist packages, thresholds)
    + inline `# agentshield: ignore` comments.
 5. GitHub Action (action.yml + workflow) that runs on PRs and posts the
    markdown report as a comment.

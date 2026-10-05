@@ -168,6 +168,59 @@ Each entry: the choice, the alternatives, and why.
   contains no diff exits with code 2 and an error. An empty diff is still fine
   (nothing changed = nothing to report).
 
+## Step 4: configuration (`config.py`)
+
+### 22. Python 3.11 minimum, for `tomllib`
+- The config file is TOML (the format `pyproject.toml` uses). The standard
+  library can read TOML only from 3.11 (`tomllib`).
+- *Alternatives:* write a mini TOML parser for 3.10 (more code to test, and
+  it would be subtly wrong), or use JSON/INI for the config (worse to edit by
+  hand: no comments in JSON).
+- *Why it's fine:* Python 3.10 reaches end-of-life in October 2026, and CI
+  runners default to 3.12. Tested on real 3.11 and 3.12 interpreters.
+  (This supersedes the 3.10 minimum in #11.)
+
+### 23. Two escape hatches, at two scopes
+- `.agentshield.toml` for project-wide policy (`ignore_paths`, `ignore_rules`,
+  `allow_packages`, `fail_on`, `fail_score`, `new_package_days`). It lives in
+  the repo, so changing policy goes through code review.
+- `# agentshield: ignore[rule]` on a single line for one-off exceptions, next
+  to the code, where a reviewer sees it. A bare `agentshield: ignore`
+  silences every rule on that line.
+- *Why both:* without a cheap way to silence a false positive, people
+  disable the whole tool. A tool that can be tuned stays switched on.
+
+### 24. Suppression is never silent
+- Every hidden finding is counted in a note ("2 finding(s) hidden by inline
+  comments", "3 file(s) skipped by ignore_paths"), so a reviewer can tell when
+  someone is hiding things.
+- Unknown keys are errors (exit 2): `ignore_path` (missing "s") silently doing
+  nothing would be the worst kind of bug in a security tool.
+
+### 25. Matching rules
+- Rules: `"secret"` or `"secret.*"` = every secret rule; `"secret.jwt"` = one.
+  A prefix must be a whole segment, so `"secret"` doesn't match `"secretive.x"`.
+- Paths: `"vendor/"` = that folder at any depth; anything else is a glob
+  (`fnmatch`) tried against the full path and the file name.
+- Packages: names are PEP 503-normalized and globs work, so `"@acme/*"`
+  allows a whole private npm scope. Allowed packages skip the network too.
+- CLI flags beat the config file (`--fail-on high` overrides `fail_on`), and
+  `--fail-on never` also disables `fail_score`.
+
+### 26. Dogfooding: running AgentShield on its own code
+- Scanning this repo's own history found **21 false positives**, all from
+  rules matching *text about* risky code rather than risky code: messages
+  like `"never use eval()"`, a docstring listing `DROP TABLE`, a README table.
+  It also found that one test had a literal key-shaped string, breaking #16.
+- *Fix:* a rule now only fires when its match **starts in code**, not inside a
+  quoted string (`_in_string`) or a multi-line docstring (`_docstring_lines`).
+  Exceptions are rules where the evidence *is* a string: SQL in
+  `op.execute("DROP TABLE x")`, the CORS header name, `os.environ["NODE_TLS_..."]`.
+  Docs (`.md`, `.rst`) are skipped by the migration rule too.
+- Result: 21 → 0 on our own code. The string check is a per-line heuristic
+  (an apostrophe in a trailing comment can confuse it), which is acceptable
+  because its failure mode is staying quiet, not crying wolf.
+
 ## Open questions (to decide with data)
 - Should plain hardcoded passwords (`password = "hunter2"`, low entropy) be
   flagged? Currently not: test code is full of them.

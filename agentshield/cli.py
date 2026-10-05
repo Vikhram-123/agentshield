@@ -9,8 +9,9 @@ from . import __version__
 from .checks.packages import check_packages
 from .checks.risky import check_risky
 from .checks.secrets import check_secrets
+from .config import ConfigError, apply_ignores, load_config
 from .diff import git_diff, parse_diff
-from .findings import Severity
+from .findings import Severity, risk_score
 from .registry import Registry
 from .report import render_json, render_markdown, render_text
 
@@ -31,8 +32,11 @@ def build_parser() -> argparse.ArgumentParser:
     s.add_argument("--format", choices=["text", "markdown", "json"], default="text")
     s.add_argument("--offline", action="store_true",
                    help="don't contact PyPI/npm (typo checks only)")
-    s.add_argument("--fail-on", choices=["high", "medium", "low", "never"], default="high",
-                   help="exit with code 1 if a finding is at least this severe (default: high)")
+    s.add_argument("--fail-on", choices=["high", "medium", "low", "never"], default=None,
+                   help="exit with code 1 if a finding is at least this severe "
+                        "(default: fail_on from the config, else high)")
+    s.add_argument("--config", metavar="FILE",
+                   help="settings file (default: .agentshield.toml in --repo)")
     s.add_argument("--repo", default=".", help="repository root (default: current folder)")
     s.add_argument("--no-color", action="store_true")
     return p
@@ -40,6 +44,12 @@ def build_parser() -> argparse.ArgumentParser:
 
 def main(argv: list[str] | None = None) -> int:
     args = build_parser().parse_args(argv)
+
+    try:
+        config = load_config(args.repo, args.config)
+    except (ConfigError, OSError) as e:
+        print(f"agentshield: {e}", file=sys.stderr)
+        return 2
 
     try:
         if args.diff == "-":
@@ -60,14 +70,22 @@ def main(argv: list[str] | None = None) -> int:
         print("agentshield: input is not a unified diff (expected 'diff --git' headers)",
               file=sys.stderr)
         return 2
+    kept = [f for f in files if not config.path_ignored(f.path)]
+    skipped, files = len(files) - len(kept), kept
     scanned = len([f for f in files if not f.is_deleted])
     registry = None if args.offline else Registry()
-    findings, notes = check_packages(files, registry, repo_root=args.repo)
+    findings, notes = check_packages(files, registry, repo_root=args.repo,
+                                     new_package_days=config.new_package_days,
+                                     is_allowed=config.package_allowed)
     # The other checks only need the diff. Each returns (findings, notes).
     for check in (check_secrets, check_risky):
         more_findings, more_notes = check(files)
         findings += more_findings
         notes += more_notes
+    findings, ignore_notes = apply_ignores(findings, files, config)
+    notes += ignore_notes
+    if skipped:
+        notes.append(f"{skipped} file(s) skipped by ignore_paths in {config.source}.")
 
     if args.format == "json":
         out = render_json(findings, notes, scanned)
@@ -78,11 +96,15 @@ def main(argv: list[str] | None = None) -> int:
     sys.stdout.write(out)
 
     # Exit code lets CI block the merge: 0 = pass, 1 = problems found.
-    if args.fail_on != "never":
-        threshold = {"high": 0, "medium": 1, "low": 2}[args.fail_on]
-        rank = {Severity.HIGH: 0, Severity.MEDIUM: 1, Severity.LOW: 2}
-        if any(rank[f.severity] <= threshold for f in findings):
-            return 1
+    fail_on = args.fail_on or config.fail_on or "high"
+    if fail_on == "never":
+        return 0
+    threshold = {"high": 0, "medium": 1, "low": 2}[fail_on]
+    rank = {Severity.HIGH: 0, Severity.MEDIUM: 1, Severity.LOW: 2}
+    if any(rank[f.severity] <= threshold for f in findings):
+        return 1
+    if config.fail_score is not None and findings and risk_score(findings) >= config.fail_score:
+        return 1
     return 0
 
 

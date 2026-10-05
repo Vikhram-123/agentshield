@@ -25,13 +25,13 @@ malware ("slopsquatting"). AgentShield scans a code change and flags:
 
 Secrets are masked in every report (`AKIA********`).
 
-*Coming next: config file, GitHub Action.*
+*Coming next: GitHub Action.*
 
 ## Install
 
 ```bash
 cd agentshield
-python3 -m venv .venv && source .venv/bin/activate
+python3 -m venv .venv   # Python 3.11+ && source .venv/bin/activate
 pip install -e .
 ```
 
@@ -46,6 +46,28 @@ agentshield scan --format markdown   # for PR comments (also: json)
 agentshield scan --offline           # no network: typo checks only
 agentshield scan --fail-on medium    # exit code 1 on medium+ (for CI)
 ```
+
+## Configure
+
+Optional. Put a `.agentshield.toml` in the repo root:
+
+```toml
+fail_on = "medium"                     # high | medium | low | never
+fail_score = 60                        # also fail if the risk score reaches 60
+ignore_paths = ["vendor/", "*.min.js"]
+ignore_rules = ["risky.no-tests"]      # or a whole family: "secret"
+allow_packages = ["acme-internal-sdk", "@acme/*"]
+new_package_days = 30
+```
+
+Or silence one line in place:
+
+```python
+result = eval(expr)  # agentshield: ignore[risky.dangerous-call]
+```
+
+Hidden findings are always counted in the report's notes, so nothing is
+suppressed silently. Unknown settings are an error, not ignored.
 
 Try it on the sample "AI-written" pull request:
 

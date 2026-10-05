@@ -126,7 +126,7 @@ class FalsePositiveTest(unittest.TestCase):
 
 class HelperTest(unittest.TestCase):
     def test_mask(self):
-        self.assertEqual(mask("AKIA1234567890ABCDEF"), "AKIA********")
+        self.assertEqual(mask("AKIA" + "1234567890ABCDEF"), "AKIA********")
         self.assertEqual(mask("hunter2"), "********")  # short: show nothing
 
     def test_is_placeholder(self):

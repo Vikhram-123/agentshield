@@ -117,7 +117,9 @@ class LineRuleTest(unittest.TestCase):
         lines = ["r = requests.get(url, verify=False)", "DEBUG = True",
                  "CORS_ALLOW_ALL_ORIGINS = True", "app.add_middleware(CORSMiddleware, allow_origins=['*'])",
                  "ALLOWED_HOSTS = ['*']", "@csrf_exempt", "ctx = ssl._create_unverified_context()",
-                 "  rejectUnauthorized: false,", "app.use(cors());"]
+                 "  rejectUnauthorized: false,", "app.use(cors());",
+                 'res.setHeader("Access-Control-Allow-Origin", "*");',
+                 'os.environ["NODE_TLS_REJECT_UNAUTHORIZED"] = "0"']
         for line in lines:
             with self.subTest(line=line):
                 self.assertEqual(one("app/settings.py", line), ["risky.insecure-setting"])
@@ -137,6 +139,26 @@ class LineRuleTest(unittest.TestCase):
                  "cursor.execute(sql, params)", "verify=True", "re.compile(p).exec(s)",
                  "transport = nodemailer.createTransport({ secure: false })"]
         self.assertEqual(one("app/run.py", *lines), [])
+
+    def test_text_inside_strings_is_not_code(self):
+        # Found by running AgentShield on itself: its own messages mention these.
+        lines = ['msg = "TLS checking is off (verify=False)"', "name = 'eval()'",
+                 'HELP = "never pass shell=True"', 'print(f"see {x}: os.system() is risky")',
+                 'example = "ALLOWED_HOSTS = [\'*\']"']
+        self.assertEqual(one("app/messages.py", *lines), [])
+        self.assertEqual(one("app/run.py", 'out = eval("1 + " + s)'), ["risky.dangerous-call"])
+
+    def test_docstrings_are_prose(self):
+        lines = ['"""Helpers.', "", "Never call eval(x) or use shell=True here.",
+                 "DROP TABLE is handled elsewhere.", '"""', "x = eval(s)"]
+        findings, _ = check_risky(files_from(make_diff("app/helpers.py", lines)))
+        self.assertEqual([(f.rule, f.line) for f in findings], [("risky.dangerous-call", 6)])
+
+    def test_skip_markers_in_strings_are_not_skips(self):
+        self.assertEqual(one("tests/test_rules.py", 'check("@pytest.mark.skip")'), [])
+
+    def test_migration_rule_skips_docs(self):
+        self.assertEqual(one("README.md", "| Destructive | `DROP TABLE` | HIGH |"), [])
 
     def test_tests_and_docs_exempt(self):
         self.assertEqual(one("tests/test_api.py", "requests.get(u, verify=False)", "eval('1+1')"), [])
