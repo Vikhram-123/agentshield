@@ -28,6 +28,7 @@ agentshield/
   diff.py           parse unified diffs -> FileDiff(added lines + line numbers)
   findings.py       Finding dataclass, Severity, risk_score()
   report.py         text / markdown / json renderers
+  github_comment.py post/update the PR comment (used by action.yml)
   registry.py       PyPI + npm lookups (injectable fetcher, cached)
   similarity.py     edit distance for typosquat detection
   config.py         .agentshield.toml + inline `agentshield: ignore` comments
@@ -65,7 +66,7 @@ Every check is a function that takes `list[FileDiff]` and returns
    DEBUG=True, CORS "*"), dangerous calls (eval, exec, shell=True, pickle.loads).
 4. [DONE] Config file `.agentshield.toml` (ignore paths, allowlist packages, thresholds)
    + inline `# agentshield: ignore` comments.
-5. GitHub Action (action.yml + workflow) that runs on PRs and posts the
+5. [DONE, untested on GitHub until pushed] GitHub Action (action.yml + workflow) that runs on PRs and posts the
    markdown report as a comment.
 6. Benchmark (bench/): collect ~150 real public PRs (include AI-assisted ones),
    run AgentShield, hand-label findings, report precision/recall + scan time.

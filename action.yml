@@ -1,0 +1,120 @@
+# AgentShield as a GitHub Action.
+#
+# Usage in another repo (.github/workflows/agentshield.yml):
+#
+#   on: pull_request
+#   permissions:
+#     contents: read
+#     pull-requests: write      # to post the comment
+#   jobs:
+#     scan:
+#       runs-on: ubuntu-latest
+#       steps:
+#         - uses: actions/checkout@v4
+#           with:
+#             fetch-depth: 0     # full history, so the diff vs. base is instant
+#         - uses: OWNER/agentshield@v1
+#           with:
+#             fail-on: high
+#
+# It's a "composite" action: a list of shell steps, no Docker image to build,
+# so it starts in seconds. All the logic lives in the Python package.
+
+name: AgentShield
+description: Catch hallucinated packages, leaked secrets and risky changes in AI-written code.
+branding:
+  icon: shield
+  color: blue
+
+inputs:
+  fail-on:
+    description: "Fail the check if a finding is at least this severe: high, medium, low or never."
+    required: false
+    default: high
+  base:
+    description: "Branch to compare against. Defaults to the pull request's base branch."
+    required: false
+    default: ""
+  comment:
+    description: "Post the report as a pull request comment (true/false)."
+    required: false
+    default: "true"
+  args:
+    description: "Extra arguments for 'agentshield scan', e.g. --offline or --config path."
+    required: false
+    default: ""
+  github-token:
+    description: "Token used to post the comment."
+    required: false
+    default: ${{ github.token }}
+
+outputs:
+  exit-code:
+    description: "0 = passed, 1 = findings at or above fail-on, 2 = error."
+    value: ${{ steps.scan.outputs.exit-code }}
+
+runs:
+  using: composite
+  steps:
+    - uses: actions/setup-python@v5
+      with:
+        python-version: "3.12"
+
+    - name: Install AgentShield
+      shell: bash
+      # The action's own folder is the package source: no PyPI download needed.
+      run: python -m pip install --quiet --disable-pip-version-check "$GITHUB_ACTION_PATH"
+
+    - name: Scan the pull request
+      id: scan
+      shell: bash
+      env:
+        # Inputs go through env vars, never pasted into the script with ${{ }}:
+        # that would let a crafted input inject shell commands.
+        INPUT_BASE: ${{ inputs.base }}
+        INPUT_FAIL_ON: ${{ inputs.fail-on }}
+        INPUT_ARGS: ${{ inputs.args }}
+      run: |
+        set +e   # we want the exit code, not to stop on it
+        base="${INPUT_BASE:-$GITHUB_BASE_REF}"
+        if [ -z "$base" ]; then
+          echo "::error::No base branch: set the 'base' input or run on pull_request events."
+          echo "exit-code=2" >> "$GITHUB_OUTPUT"
+          exit 0
+        fi
+        # actions/checkout clones 1 commit by default; then git can't find where
+        # the branch split from base ("no merge base"). Fetch the history we need.
+        if [ "$(git rev-parse --is-shallow-repository)" = "true" ]; then
+          echo "::notice::Shallow checkout; fetching history (use fetch-depth: 0 to skip this)."
+          git fetch --no-tags --quiet --unshallow origin
+        fi
+        if ! git rev-parse --verify --quiet "origin/$base" > /dev/null; then
+          git fetch --no-tags --quiet origin "$base:refs/remotes/origin/$base"
+        fi
+        report="$RUNNER_TEMP/agentshield-report.md"
+        # shellcheck disable=SC2086  # INPUT_ARGS is meant to split into words
+        agentshield scan --base "origin/$base" --format markdown \
+          --fail-on "$INPUT_FAIL_ON" $INPUT_ARGS > "$report"
+        code=$?
+        cat "$report" >> "$GITHUB_STEP_SUMMARY"
+        echo "report=$report" >> "$GITHUB_OUTPUT"
+        echo "exit-code=$code" >> "$GITHUB_OUTPUT"
+
+    - name: Comment on the pull request
+      if: inputs.comment == 'true' && github.event_name == 'pull_request' && steps.scan.outputs.report != ''
+      shell: bash
+      env:
+        GITHUB_TOKEN: ${{ inputs.github-token }}
+        REPORT: ${{ steps.scan.outputs.report }}
+      run: python -m agentshield.github_comment "$REPORT"
+
+    - name: Pass or fail
+      shell: bash
+      env:
+        CODE: ${{ steps.scan.outputs.exit-code }}
+      run: |
+        case "$CODE" in
+          0) echo "AgentShield: passed." ;;
+          1) echo "::error::AgentShield found problems at or above the fail-on level."; exit 1 ;;
+          *) echo "::error::AgentShield could not run (exit code $CODE)."; exit 1 ;;
+        esac

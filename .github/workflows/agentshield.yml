@@ -1,0 +1,21 @@
+# AgentShield scanning its own pull requests (dogfooding), using the action
+# in this repo ("uses: ./") so every change to the action is tested here first.
+name: agentshield
+
+on:
+  pull_request:   # not pull_request_target: never give fork PRs a write token
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: ./
+        with:
+          fail-on: high

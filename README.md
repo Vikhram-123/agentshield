@@ -25,7 +25,7 @@ malware ("slopsquatting"). AgentShield scans a code change and flags:
 
 Secrets are masked in every report (`AKIA********`).
 
-*Coming next: GitHub Action.*
+
 
 ## Install
 
@@ -46,6 +46,35 @@ agentshield scan --format markdown   # for PR comments (also: json)
 agentshield scan --offline           # no network: typo checks only
 agentshield scan --fail-on medium    # exit code 1 on medium+ (for CI)
 ```
+
+## GitHub Action
+
+Scan every pull request and post the report as a comment:
+
+```yaml
+# .github/workflows/agentshield.yml
+name: agentshield
+on: pull_request
+permissions:
+  contents: read
+  pull-requests: write
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: OWNER/agentshield@v1   # replace OWNER once published
+        with:
+          fail-on: high              # high | medium | low | never
+```
+
+The comment is edited in place on each push (no comment spam), and the
+report is always in the job summary too. PRs from forks get a read-only
+token, so for those the report is only in the job summary. AgentShield
+deliberately does not use `pull_request_target`, which would hand fork code a
+write token.
 
 ## Configure
 

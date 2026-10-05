@@ -221,6 +221,58 @@ Each entry: the choice, the alternatives, and why.
   (an apostrophe in a trailing comment can confuse it), which is acceptable
   because its failure mode is staying quiet, not crying wolf.
 
+## Step 5: GitHub Action (`action.yml`, `github_comment.py`)
+
+### 27. Composite action that installs from its own folder
+- *Alternatives:* a Docker action (slow: builds an image every run) or a
+  JavaScript action (a second language and a `node_modules` to audit).
+- *Why composite:* it's just shell steps. `pip install "$GITHUB_ACTION_PATH"`
+  installs the exact code at the action's tag, with no PyPI download, and
+  since there are no dependencies (#3) that takes about a second.
+
+### 28. What gets compared
+- `git diff origin/<base>...HEAD`: the three dots mean "since the branch split
+  off base", so commits that landed on main meanwhile don't show up as the
+  PR's changes.
+- That needs history. `actions/checkout` clones one commit by default, so
+  git says "no merge base". The action detects a shallow clone and fetches
+  the history itself (`--unshallow`), with a notice. Users don't have to
+  know about `fetch-depth: 0`, though it's faster.
+
+### 29. One comment, edited in place
+- An invisible HTML marker (`<!-- agentshield-report -->`) identifies our
+  comment. Each run looks for it (paging through comments) and edits it
+  (PATCH) instead of posting a new one (POST), so 10 pushes = 1 comment.
+- The comment code is Python with an injectable `request` function, the same
+  pattern as the registry fetcher (#5), so the tests use a fake GitHub API.
+
+### 30. Security of the action itself
+- **`pull_request`, not `pull_request_target`.** `pull_request_target` runs with
+  a write token even for PRs from forks, and checking out fork code in that
+  context is a well-known way to get repos hijacked. The cost: fork PRs get a
+  read-only token and can't be commented on, so we fall back to the job
+  summary with a warning, never a failure.
+- **Inputs go through `env:`, never `${{ inputs.x }}` inside `run:`.**
+  GitHub pastes `${{ }}` into the script text *before* bash runs, so a crafted
+  input could inject shell commands. Environment variables are just data.
+- **Minimal permissions:** `contents: read`, `pull-requests: write`.
+
+### 31. Exit codes are kept until the end
+- The scan step runs with `set +e` and saves the exit code, so the report is
+  still published and commented when there are findings. The last step then
+  fails the check (exit 1 for findings, and also for errors: exit 2 must
+  never look like a pass).
+
+### 32. How it was tested without pushing to GitHub
+- `actionlint` (the standard workflow linter) on the workflows, plus
+  `shellcheck` on every `run:` script extracted from `action.yml`.
+- An end-to-end simulation: a bare "origin" repo, a PR branch with a leaked
+  key, a typosquat and `shell=True`, the action's four steps run with
+  GitHub's environment variables set, and a local fake GitHub API server.
+  Verified: comment created, a second run *updated* it, the check failed, and
+  a shallow single-branch clone still worked.
+- Not yet verified on real GitHub (needs the repo to be pushed).
+
 ## Open questions (to decide with data)
 - Should plain hardcoded passwords (`password = "hunter2"`, low entropy) be
   flagged? Currently not: test code is full of them.
