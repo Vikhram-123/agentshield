@@ -1,0 +1,55 @@
+diff --git a/requirements.txt b/requirements.txt
+index 1111111..2222222 100644
+--- a/requirements.txt
++++ b/requirements.txt
+@@ -1,2 +1,6 @@
+ flask==3.0.0
+ numpy
++requests>=2.31
++flask-auth-helper==1.2.0
++reqeusts
++fastjsonx  # for speed
+diff --git a/app/server.py b/app/server.py
+new file mode 100644
+--- /dev/null
++++ b/app/server.py
+@@ -0,0 +1,9 @@
++import os, json
++import yaml
++from utils import helpers
++from .models import User
++import langchain_memory_tools as lmt
++from google.cloud import storage
++
++def main():
++    return os.getenv("X")
+diff --git a/app/utils.py b/app/utils.py
+new file mode 100644
+--- /dev/null
++++ b/app/utils.py
+@@ -0,0 +1 @@
++helpers = None
+diff --git a/web/package.json b/web/package.json
+--- a/web/package.json
++++ b/web/package.json
+@@ -3,6 +3,9 @@
+   "version": "1.0.0",
+   "scripts": {
+     "build": "vite build"
+   },
+   "dependencies": {
+-    "express": "^4.18.0"
++    "express": "^4.19.0",
++    "react-fast-hooks-x": "^0.3.1",
++    "lodahs": "^1.0.0"
+   }
+ }
+diff --git a/web/index.js b/web/index.js
+--- a/web/index.js
++++ b/web/index.js
+@@ -1,2 +1,5 @@
+ const a = 1;
++const fs = require('fs');
++import { thing } from './thing';
++import { magic } from '@ai-utils/super-fetch';
+ module.exports = a;
