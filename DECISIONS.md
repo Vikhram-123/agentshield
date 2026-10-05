@@ -66,7 +66,73 @@ Each entry: the choice, the alternatives, and why.
   flagged. macOS ships 3.9, so `pyproject.toml`'s `requires-python = ">=3.10"`
   matters: pip refuses to install on 3.9 instead of producing junk.
 
+## Step 2: secret scanner (`checks/secrets.py`)
+
+### 12. Two layers: known formats first, entropy second
+- *Known formats:* one regex per provider prefix (`AKIA`, `ghp_`, `sk-ant-`,
+  `sk_live_`, `xoxb-`, `AIza`, `eyJ...`, `-----BEGIN ... PRIVATE KEY-----`,
+  `postgres://user:pass@host`). A prefix match is near-certain, so these are
+  HIGH (MEDIUM for Google keys and JWTs; see #15).
+- *Entropy:* for unknown formats, measure how random a value is (Shannon
+  entropy, bits per character: `-Σ p·log2(p)`).
+- *Alternatives:* entropy alone (what early tools like truffleHog did) is very
+  noisy; regex alone misses custom keys. Using both, with regex first, gives
+  precise named findings and a fallback.
+- *Order matters:* `sk-ant-` (Anthropic) is checked before `sk-` (OpenAI), and
+  once a span is reported nothing else can report it, so one key = one finding.
+
+### 13. Entropy only runs on secret-named variables
+- *Rule:* the value must be assigned to a name containing secret/token/password/
+  api_key/..., be ≥ 16 chars, contain a letter **and** a digit, not be a URL or
+  path, and score ≥ 3.5 bits/char.
+- *Why not every string?* Hashes, UUIDs, base64 images and lockfile checksums
+  are random too. Measured: a random 20-char key scores 3.9, but so does
+  `app.settings.SECRET_KEY` (4.0). Entropy can't separate them; the
+  letter+digit rule and the variable name can.
+- *Trade-off:* a key assigned to `x = "..."` is missed. I chose precision over
+  recall; the benchmark (step 6) will show whether that was right.
+- Unquoted `NAME=value` only counts in `.env`/YAML/ini files; in code it's
+  usually a function call, not a literal.
+
+### 14. Placeholders, test files, lockfiles
+- *Placeholders skipped:* values containing `xxx`, `your`, `example`,
+  `changeme`, `<...>`, `${...}`, a repeated single character, and default dev
+  passwords in DB URLs (`postgres:postgres@`, or host `localhost`). The AWS
+  docs key `AKIAIOSFODNN7EXAMPLE` is skipped because it contains "example".
+- *Safe formats:* Stripe `sk_test_`/`pk_live_` keys can't move money or are
+  meant to be public.
+- *Test/fixture/example files:* known-format hits are **downgraded to LOW**,
+  not skipped (real keys do leak in tests), and the entropy layer is off there.
+  A note tells the reviewer.
+- *Lockfiles, `.min.js`, `.map`, `.svg`:* skipped entirely (full of checksums).
+
+### 15. Severity choices
+- HIGH for keys that give direct access (cloud, payments, source control, LLM
+  APIs: someone can run up your bill).
+- MEDIUM for Google API keys (Firebase/browser keys are often public by design),
+  JWTs (often short-lived), Slack webhooks (can only post) and entropy guesses.
+
+### 16. Mask secrets in output, and never put real-looking keys in our own repo
+- The report shows the first 4 chars + `********` (nothing for secrets under
+  12 chars like passwords, since 4 chars of a short password leaks too much). A
+  security tool's report gets pasted into PR comments, so it must not leak again.
+- Tests build fake keys at runtime (`"AKIA" + fake_secret(16)`), so the source
+  never contains a key-shaped string. GitHub push protection would block it,
+  and AgentShield would flag its own tests.
+
+### 17. Measured, not guessed
+- **Precision:** treated the whole Python 3.12 stdlib (1,093 files, 445k lines)
+  as one big added diff: **0 findings**.
+- **Recall:** gitleaks' sample repos: 4/4 planted AWS keys found. Tiny sample;
+  step 6 gives the real number.
+- **Speed:** the first version took 7.9s on the stdlib. Profiling showed the
+  assignment regex was 90% of it: an unanchored `[\w.-]*` retried at every
+  character. Anchoring the name plus a cheap keyword pre-check → 3.3s
+  (≈7µs/line; a big PR is milliseconds).
+
 ## Open questions (to decide with data)
+- Should plain hardcoded passwords (`password = "hunter2"`, low entropy) be
+  flagged? Currently not: test code is full of them.
 - Is 30 days the right "new package" cutoff?
 - Should download counts factor in? (Needs a stats API.)
 - How many false positives on real PRs? This is what the benchmark answers.

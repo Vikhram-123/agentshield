@@ -7,6 +7,7 @@ import sys
 
 from . import __version__
 from .checks.packages import check_packages
+from .checks.secrets import check_secrets
 from .diff import git_diff, parse_diff
 from .findings import Severity
 from .registry import Registry
@@ -54,6 +55,11 @@ def main(argv: list[str] | None = None) -> int:
     files = [f for f in parse_diff(text) if not f.is_deleted]
     registry = None if args.offline else Registry()
     findings, notes = check_packages(files, registry, repo_root=args.repo)
+    # The other checks only need the diff. Each returns (findings, notes).
+    for check in (check_secrets,):
+        more_findings, more_notes = check(files)
+        findings += more_findings
+        notes += more_notes
 
     if args.format == "json":
         out = render_json(findings, notes, len(files))

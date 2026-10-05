@@ -13,8 +13,12 @@ malware ("slopsquatting"). AgentShield scans a code change and flags:
 | Brand-new package (< 30 days old) | first published 5 days ago | MEDIUM |
 | Removed by npm for malware | `0.0.1-security` stub | HIGH |
 | Unknown import | `import langchain_memory_tools` | MEDIUM |
+| Leaked API key (AWS, GitHub, OpenAI, Anthropic, Stripe, Slack, private keys, DB URLs) | `AKIA...` in `config.py` | HIGH |
+| Random-looking value in a secret-named variable | `api_key = "q8Zr..."` | MEDIUM |
 
-*Coming next: hardcoded secrets, risky auth/database changes, deleted tests, GitHub Action.*
+Secrets are masked in every report (`AKIA********`).
+
+*Coming next: risky auth/database changes, deleted tests, GitHub Action.*
 
 ## Install
 
