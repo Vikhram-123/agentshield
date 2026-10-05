@@ -1,7 +1,8 @@
 import os
 import unittest
 
-from agentshield.checks.packages import check_packages, extract_dependencies
+from agentshield.checks.packages import (check_packages, extract_dependencies, find_local_modules,
+                                        find_workspace_packages)
 from agentshield.diff import parse_diff
 from agentshield.findings import Severity
 from agentshield.registry import Registry
@@ -36,6 +37,37 @@ class ExtractTest(unittest.TestCase):
                      "pyyaml", "langchain_memory_tools", "express",
                      "react-fast-hooks-x", "lodahs", "@ai-utils/super-fetch"]:
             self.assertIn(kept, names)
+
+    def test_monorepo_and_alias_imports_are_local(self):
+        # Every case here was a false positive in the benchmark's dev set.
+        diff = ("diff --git a/web/src/a.ts b/web/src/a.ts\n--- a/web/src/a.ts\n+++ b/web/src/a.ts\n"
+                "@@ -0,0 +1,6 @@\n"
+                "+import { describe } from 'bun:test';\n"                   # runtime built-in
+                "+import { db } from '@workspace/db';\n"                    # workspace package
+                "+import { Button } from '@components/atoms/button';\n"    # tsconfig path alias
+                "+check(/import X from \"@\\/components\\/X\";/);\n"  # text in a regex
+                "+import { z } from '@types/zod-fake';\n"                  # known scope: still checked
+                "+import x from 'totally-unknown-pkg';\n")
+        repo = ["lib/db/package.json", "src/components/atoms/button.ts", "src/types/index.ts"]
+        local = find_local_modules(NO_REPO, parse_diff(diff), repo)
+        workspace = find_workspace_packages(NO_REPO, parse_diff(diff), repo)
+        names = {d.name for d in extract_dependencies(parse_diff(diff), local, workspace)}
+        self.assertEqual(names, {"@types/zod-fake", "totally-unknown-pkg"})
+
+    def test_workspace_package_in_manifest(self):
+        diff = ("diff --git a/package.json b/package.json\n--- a/package.json\n+++ b/package.json\n"
+                "@@ -1 +1,2 @@\n {\n+    \"vitest-config\": \"5.56.0\",\n")
+        ws = find_workspace_packages(NO_REPO, parse_diff(diff), ["packages/utils/vitest-config/package.json"])
+        self.assertEqual(extract_dependencies(parse_diff(diff), set(), ws), [])
+
+    def test_workspace_names_read_from_disk(self):
+        import json
+        import tempfile
+        with tempfile.TemporaryDirectory() as repo:
+            os.makedirs(os.path.join(repo, "packages", "tokens"))
+            with open(os.path.join(repo, "packages", "tokens", "package.json"), "w") as fh:
+                json.dump({"name": "@acme/design-tokens"}, fh)
+            self.assertIn("@acme/design-tokens", find_workspace_packages(repo, []))
 
     def test_requirements_edge_cases(self):
         diff = ("diff --git a/requirements.txt b/requirements.txt\n--- a/requirements.txt\n"
@@ -88,6 +120,12 @@ class CheckPackagesTest(unittest.TestCase):
                 '@@ -1 +1,2 @@\n {\n+  "evil-pkg": "^1.0.0",\n')
         findings, _ = check_packages(parse_diff(diff), Registry(fake_fetch), repo_root=NO_REPO, now=NOW)
         self.assertEqual(findings[0].rule, "package.malware-removed")
+
+    def test_repo_file_list_marks_local_modules(self):
+        # Without the list, "langchain_memory_tools" looks like a missing package...
+        findings, _ = check_packages(load("ai_pr.diff"), Registry(fake_fetch), repo_root=NO_REPO,
+                                     now=NOW, repo_files=["src/langchain_memory_tools/__init__.py"])
+        self.assertNotIn("langchain_memory_tools", by_name(findings))
 
     def test_network_failure_becomes_note_not_crash(self):
         findings, notes = check_packages(load("ai_pr.diff"), Registry(broken_fetch),

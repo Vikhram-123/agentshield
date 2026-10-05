@@ -8,3 +8,6 @@ dist/
 .pytest_cache/
 .idea/
 .DS_Store
+
+# benchmark inputs: third-party code, may contain real leaked secrets (see DECISIONS.md)
+bench/data/

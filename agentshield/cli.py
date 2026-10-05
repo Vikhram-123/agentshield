@@ -9,9 +9,9 @@ from . import __version__
 from .checks.packages import check_packages
 from .checks.risky import check_risky
 from .checks.secrets import check_secrets
-from .config import ConfigError, apply_ignores, load_config
+from .config import Config, ConfigError, apply_ignores, load_config
 from .diff import git_diff, parse_diff
-from .findings import Severity, risk_score
+from .findings import Finding, Severity, risk_score
 from .registry import Registry
 from .report import render_json, render_markdown, render_text
 
@@ -42,6 +42,36 @@ def build_parser() -> argparse.ArgumentParser:
     return p
 
 
+def scan(text: str, config: Config, registry: Registry | None, repo_root: str = ".",
+         repo_files: list[str] | None = None) -> tuple[list[Finding], list[str], int]:
+    """Run every check on a diff. Returns (findings, notes, files scanned).
+
+    Kept separate from main() so the benchmark runs exactly what users run.
+    repo_files: the repo's file list, when it isn't checked out on disk.
+    """
+    # Deleted files are kept: the risky-change check needs to see deleted tests.
+    files = parse_diff(text)
+    if text.strip() and not files:
+        # Saying "CLEAN" about something we couldn't read would be a lie.
+        raise ValueError("input is not a unified diff (expected 'diff --git' headers)")
+    kept = [f for f in files if not config.path_ignored(f.path)]
+    skipped, files = len(files) - len(kept), kept
+    scanned = len([f for f in files if not f.is_deleted])
+    findings, notes = check_packages(files, registry, repo_root=repo_root, repo_files=repo_files,
+                                     new_package_days=config.new_package_days,
+                                     is_allowed=config.package_allowed)
+    # The other checks only need the diff. Each returns (findings, notes).
+    for check in (check_secrets, check_risky):
+        more_findings, more_notes = check(files)
+        findings += more_findings
+        notes += more_notes
+    findings, ignore_notes = apply_ignores(findings, files, config)
+    notes += ignore_notes
+    if skipped:
+        notes.append(f"{skipped} file(s) skipped by ignore_paths in {config.source}.")
+    return findings, notes, scanned
+
+
 def main(argv: list[str] | None = None) -> int:
     args = build_parser().parse_args(argv)
 
@@ -63,29 +93,12 @@ def main(argv: list[str] | None = None) -> int:
         print(f"agentshield: {e}", file=sys.stderr)
         return 2
 
-    # Deleted files are kept: the risky-change check needs to see deleted tests.
-    files = parse_diff(text)
-    if text.strip() and not files:
-        # Saying "CLEAN" about something we couldn't read would be a lie.
-        print("agentshield: input is not a unified diff (expected 'diff --git' headers)",
-              file=sys.stderr)
-        return 2
-    kept = [f for f in files if not config.path_ignored(f.path)]
-    skipped, files = len(files) - len(kept), kept
-    scanned = len([f for f in files if not f.is_deleted])
     registry = None if args.offline else Registry()
-    findings, notes = check_packages(files, registry, repo_root=args.repo,
-                                     new_package_days=config.new_package_days,
-                                     is_allowed=config.package_allowed)
-    # The other checks only need the diff. Each returns (findings, notes).
-    for check in (check_secrets, check_risky):
-        more_findings, more_notes = check(files)
-        findings += more_findings
-        notes += more_notes
-    findings, ignore_notes = apply_ignores(findings, files, config)
-    notes += ignore_notes
-    if skipped:
-        notes.append(f"{skipped} file(s) skipped by ignore_paths in {config.source}.")
+    try:
+        findings, notes, scanned = scan(text, config, registry, repo_root=args.repo)
+    except ValueError as e:
+        print(f"agentshield: {e}", file=sys.stderr)
+        return 2
 
     if args.format == "json":
         out = render_json(findings, notes, scanned)

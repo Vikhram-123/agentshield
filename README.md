@@ -104,6 +104,22 @@ Try it on the sample "AI-written" pull request:
 agentshield scan --diff tests/fixtures/ai_pr.diff
 ```
 
+## How well does it work?
+
+Measured on real public pull requests (`bench/`, full write-up in
+[`bench/RESULTS.md`](bench/RESULTS.md)):
+
+| | |
+|---|---|
+| Held-out set | 143 PRs (90 AI-assisted), scanned once with the finished tool |
+| Precision | **72%** of findings were right (18/25, 95% CI 52–86%) |
+| Recall | 32/32 planted in-scope problems found (an upper bound: see caveats) |
+| Speed | median ~10 ms per PR plus registry lookups (~0.4 s at the 95th percentile) |
+
+The tool was tuned on a separate development set (precision went from 36%
+to 74% there) before the held-out set was collected. Labels were assigned
+with written criteria and still need an independent human check.
+
 ## How it works
 
 ```

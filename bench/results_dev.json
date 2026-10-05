@@ -1,0 +1,1732 @@
+[
+ {
+  "id": "emindeniz99/rust-openssl#4",
+  "group": "ai-claude-code",
+  "url": "https://github.com/emindeniz99/rust-openssl/pull/4",
+  "diff_lines": 198,
+  "files_scanned": 9,
+  "seconds": 0.001,
+  "offline_seconds": 0.0012,
+  "findings": [
+   {
+    "rule": "risky.no-tests",
+    "severity": "low",
+    "file": "openssl-sys/build/find_vendored.rs",
+    "line": null,
+    "message": "12 line(s) of source code were added across 3 file(s), but no tests were added or changed.",
+    "fix": "Add a test that exercises the new behaviour (including a failure case)."
+   }
+  ],
+  "notes": []
+ },
+ {
+  "id": "rfhayn/clauductor#25",
+  "group": "ai-claude-code",
+  "url": "https://github.com/rfhayn/clauductor/pull/25",
+  "diff_lines": 1510,
+  "files_scanned": 15,
+  "seconds": 0.021,
+  "offline_seconds": 0.0199,
+  "findings": [],
+  "notes": []
+ },
+ {
+  "id": "PostHog/posthog#109612",
+  "group": "ai-claude-code",
+  "url": "https://github.com/PostHog/posthog/pull/109612",
+  "diff_lines": 102,
+  "files_scanned": 3,
+  "seconds": 0.058,
+  "offline_seconds": 0.0574,
+  "findings": [],
+  "notes": []
+ },
+ {
+  "id": "movcodebr/site.movcode#12",
+  "group": "ai-claude-code",
+  "url": "https://github.com/movcodebr/site.movcode/pull/12",
+  "diff_lines": 218,
+  "files_scanned": 9,
+  "seconds": 0.005,
+  "offline_seconds": 0.0044,
+  "findings": [
+   {
+    "rule": "risky.no-tests",
+    "severity": "low",
+    "file": "assets/js/home.js",
+    "line": null,
+    "message": "14 line(s) of source code were added across 1 file(s), but no tests were added or changed.",
+    "fix": "Add a test that exercises the new behaviour (including a failure case)."
+   }
+  ],
+  "notes": []
+ },
+ {
+  "id": "jorgesolerrr/kinby#486",
+  "group": "ai-claude-code",
+  "url": "https://github.com/jorgesolerrr/kinby/pull/486",
+  "diff_lines": 557,
+  "files_scanned": 14,
+  "seconds": 0.004,
+  "offline_seconds": 0.0035,
+  "findings": [],
+  "notes": []
+ },
+ {
+  "id": "iitenkida7/engawa#203",
+  "group": "ai-claude-code",
+  "url": "https://github.com/iitenkida7/engawa/pull/203",
+  "diff_lines": 343,
+  "files_scanned": 6,
+  "seconds": 0.004,
+  "offline_seconds": 0.0044,
+  "findings": [],
+  "notes": []
+ },
+ {
+  "id": "Mailpro31/nova-desktop#204",
+  "group": "ai-claude-code",
+  "url": "https://github.com/Mailpro31/nova-desktop/pull/204",
+  "diff_lines": 87,
+  "files_scanned": 3,
+  "seconds": 0.001,
+  "offline_seconds": 0.0013,
+  "findings": [],
+  "notes": []
+ },
+ {
+  "id": "kushin77/laya#82",
+  "group": "ai-claude-code",
+  "url": "https://github.com/kushin77/laya/pull/82",
+  "diff_lines": 124,
+  "files_scanned": 3,
+  "seconds": 0.002,
+  "offline_seconds": 0.0017,
+  "findings": [],
+  "notes": []
+ },
+ {
+  "id": "nivu/int.ai#94",
+  "group": "ai-claude-code",
+  "url": "https://github.com/nivu/int.ai/pull/94",
+  "diff_lines": 1859,
+  "files_scanned": 21,
+  "seconds": 0.306,
+  "offline_seconds": 0.0339,
+  "findings": [],
+  "notes": []
+ },
+ {
+  "id": "Yengaskhan/run-game-matchups#3",
+  "group": "ai-claude-code",
+  "url": "https://github.com/Yengaskhan/run-game-matchups/pull/3",
+  "diff_lines": 587,
+  "files_scanned": 15,
+  "seconds": 0.456,
+  "offline_seconds": 0.4557,
+  "findings": [],
+  "notes": []
+ },
+ {
+  "id": "wildcard/caro#1488",
+  "group": "ai-claude-code",
+  "url": "https://github.com/wildcard/caro/pull/1488",
+  "diff_lines": 807,
+  "files_scanned": 3,
+  "seconds": 0.004,
+  "offline_seconds": 0.0042,
+  "findings": [],
+  "notes": []
+ },
+ {
+  "id": "jeffjbernier/Accessible-Vibe-Coding#6",
+  "group": "ai-claude-code",
+  "url": "https://github.com/jeffjbernier/Accessible-Vibe-Coding/pull/6",
+  "diff_lines": 243,
+  "files_scanned": 6,
+  "seconds": 0.002,
+  "offline_seconds": 0.002,
+  "findings": [],
+  "notes": []
+ },
+ {
+  "id": "DevinoSolutions/stealth-chrome-devtools-mcp#178",
+  "group": "ai-claude-code",
+  "url": "https://github.com/DevinoSolutions/stealth-chrome-devtools-mcp/pull/178",
+  "diff_lines": 83,
+  "files_scanned": 5,
+  "seconds": 0.001,
+  "offline_seconds": 0.0006,
+  "findings": [],
+  "notes": []
+ },
+ {
+  "id": "WarpTalk-CapstoneProject/warptalk-desktop#41",
+  "group": "ai-claude-code",
+  "url": "https://github.com/WarpTalk-CapstoneProject/warptalk-desktop/pull/41",
+  "diff_lines": 349,
+  "files_scanned": 3,
+  "seconds": 0.324,
+  "offline_seconds": 0.0073,
+  "findings": [],
+  "notes": []
+ },
+ {
+  "id": "CannObserv/address-validator#261",
+  "group": "ai-claude-code",
+  "url": "https://github.com/CannObserv/address-validator/pull/261",
+  "diff_lines": 335,
+  "files_scanned": 8,
+  "seconds": 0.005,
+  "offline_seconds": 0.0046,
+  "findings": [],
+  "notes": []
+ },
+ {
+  "id": "CarstVaartjes/vonk-forge-recipes#516",
+  "group": "ai-claude-code",
+  "url": "https://github.com/CarstVaartjes/vonk-forge-recipes/pull/516",
+  "diff_lines": 61,
+  "files_scanned": 2,
+  "seconds": 0.004,
+  "offline_seconds": 0.0042,
+  "findings": [],
+  "notes": []
+ },
+ {
+  "id": "xbmc/xbmc#29490",
+  "group": "ai-claude-code",
+  "url": "https://github.com/xbmc/xbmc/pull/29490",
+  "diff_lines": 51,
+  "files_scanned": 2,
+  "seconds": 0.009,
+  "offline_seconds": 0.0091,
+  "findings": [],
+  "notes": []
+ },
+ {
+  "id": "Dave356w/nba-matchups#31",
+  "group": "ai-claude-code",
+  "url": "https://github.com/Dave356w/nba-matchups/pull/31",
+  "diff_lines": 1287,
+  "files_scanned": 5,
+  "seconds": 0.022,
+  "offline_seconds": 0.0217,
+  "findings": [],
+  "notes": []
+ },
+ {
+  "id": "aleiruiz/taco-hunt#48",
+  "group": "ai-claude-code",
+  "url": "https://github.com/aleiruiz/taco-hunt/pull/48",
+  "diff_lines": 105,
+  "files_scanned": 1,
+  "seconds": 0.003,
+  "offline_seconds": 0.0026,
+  "findings": [
+   {
+    "rule": "risky.no-tests",
+    "severity": "low",
+    "file": "apps/api/src/spots/spots.controller.ts",
+    "line": null,
+    "message": "74 line(s) of source code were added across 1 file(s), but no tests were added or changed.",
+    "fix": "Add a test that exercises the new behaviour (including a failure case)."
+   }
+  ],
+  "notes": []
+ },
+ {
+  "id": "joshualeestone/kosmos#4808",
+  "group": "ai-claude-code",
+  "url": "https://github.com/joshualeestone/kosmos/pull/4808",
+  "diff_lines": 355,
+  "files_scanned": 4,
+  "seconds": 0.008,
+  "offline_seconds": 0.0084,
+  "findings": [],
+  "notes": []
+ },
+ {
+  "id": "anvai-labs/victor#1211",
+  "group": "ai-claude-code",
+  "url": "https://github.com/anvai-labs/victor/pull/1211",
+  "diff_lines": 291,
+  "files_scanned": 5,
+  "seconds": 0.164,
+  "offline_seconds": 0.0119,
+  "findings": [],
+  "notes": []
+ },
+ {
+  "id": "unitaryfoundation/qldpc-challenge#2557",
+  "group": "ai-claude-code",
+  "url": "https://github.com/unitaryfoundation/qldpc-challenge/pull/2557",
+  "diff_lines": 519,
+  "files_scanned": 2,
+  "seconds": 0.012,
+  "offline_seconds": 0.011,
+  "findings": [],
+  "notes": []
+ },
+ {
+  "id": "cordel-app/gymdesk#934",
+  "group": "ai-claude-code",
+  "url": "https://github.com/cordel-app/gymdesk/pull/934",
+  "diff_lines": 1305,
+  "files_scanned": 16,
+  "seconds": 0.025,
+  "offline_seconds": 0.0256,
+  "findings": [],
+  "notes": []
+ },
+ {
+  "id": "emindeniz99/apple-purchase-receipt-verifier#203",
+  "group": "ai-claude-code",
+  "url": "https://github.com/emindeniz99/apple-purchase-receipt-verifier/pull/203",
+  "diff_lines": 1465,
+  "files_scanned": 11,
+  "seconds": 0.009,
+  "offline_seconds": 0.0084,
+  "findings": [],
+  "notes": []
+ },
+ {
+  "id": "chequepa/vinndex#191",
+  "group": "ai-claude-code",
+  "url": "https://github.com/chequepa/vinndex/pull/191",
+  "diff_lines": 1515,
+  "files_scanned": 11,
+  "seconds": 0.025,
+  "offline_seconds": 0.0248,
+  "findings": [
+   {
+    "rule": "risky.dangerous-call",
+    "severity": "medium",
+    "file": "scripts/build-store-activity.mjs",
+    "line": 29,
+    "message": "child_process.exec: exec runs the command through a shell (command injection risk).",
+    "fix": "Use execFile / spawn with an argument array."
+   },
+   {
+    "rule": "risky.dangerous-call",
+    "severity": "medium",
+    "file": "scripts/build-store-activity.mjs",
+    "line": 40,
+    "message": "child_process.exec: exec runs the command through a shell (command injection risk).",
+    "fix": "Use execFile / spawn with an argument array."
+   },
+   {
+    "rule": "risky.no-tests",
+    "severity": "low",
+    "file": "scripts/lib-store-activity.mjs",
+    "line": null,
+    "message": "283 line(s) of source code were added across 9 file(s), but no tests were added or changed.",
+    "fix": "Add a test that exercises the new behaviour (including a failure case)."
+   }
+  ],
+  "notes": []
+ },
+ {
+  "id": "OptimusFoundry/base-infra#7",
+  "group": "ai-claude-code",
+  "url": "https://github.com/OptimusFoundry/base-infra/pull/7",
+  "diff_lines": 1239,
+  "files_scanned": 14,
+  "seconds": 0.021,
+  "offline_seconds": 0.0217,
+  "findings": [],
+  "notes": []
+ },
+ {
+  "id": "EatEmAll/Graphscribe#12",
+  "group": "ai-claude-code",
+  "url": "https://github.com/EatEmAll/Graphscribe/pull/12",
+  "diff_lines": 772,
+  "files_scanned": 7,
+  "seconds": 0.012,
+  "offline_seconds": 0.0122,
+  "findings": [],
+  "notes": []
+ },
+ {
+  "id": "manyfold-open/manyfold#640",
+  "group": "ai-claude-code",
+  "url": "https://github.com/manyfold-open/manyfold/pull/640",
+  "diff_lines": 499,
+  "files_scanned": 9,
+  "seconds": 0.007,
+  "offline_seconds": 0.0068,
+  "findings": [],
+  "notes": []
+ },
+ {
+  "id": "noddle-Cake/website#1",
+  "group": "ai-claude-code",
+  "url": "https://github.com/noddle-Cake/website/pull/1",
+  "diff_lines": 2305,
+  "files_scanned": 47,
+  "seconds": 0.033,
+  "offline_seconds": 0.0324,
+  "findings": [
+   {
+    "rule": "risky.no-tests",
+    "severity": "low",
+    "file": "src/data/appearance.ts",
+    "line": null,
+    "message": "30 line(s) of source code were added across 3 file(s), but no tests were added or changed.",
+    "fix": "Add a test that exercises the new behaviour (including a failure case)."
+   }
+  ],
+  "notes": []
+ },
+ {
+  "id": "umttur/GlistStudio#55",
+  "group": "ai-claude-code",
+  "url": "https://github.com/umttur/GlistStudio/pull/55",
+  "diff_lines": 1772,
+  "files_scanned": 18,
+  "seconds": 0.571,
+  "offline_seconds": 0.0436,
+  "findings": [],
+  "notes": []
+ },
+ {
+  "id": "externaldev21-sketch/brandthread#612",
+  "group": "ai-claude-code",
+  "url": "https://github.com/externaldev21-sketch/brandthread/pull/612",
+  "diff_lines": 1408,
+  "files_scanned": 27,
+  "seconds": 5.893,
+  "offline_seconds": 0.0333,
+  "findings": [
+   {
+    "rule": "risky.auth-change",
+    "severity": "low",
+    "file": "artifacts/api-server/src/routes/auth.ts",
+    "line": 25,
+    "message": "This change touches authentication or permission code.",
+    "fix": "Get a careful human review: bugs here let the wrong people in."
+   }
+  ],
+  "notes": []
+ },
+ {
+  "id": "lentago/.github#194",
+  "group": "ai-claude-code",
+  "url": "https://github.com/lentago/.github/pull/194",
+  "diff_lines": 41,
+  "files_scanned": 3,
+  "seconds": 0.0,
+  "offline_seconds": 0.0003,
+  "findings": [],
+  "notes": []
+ },
+ {
+  "id": "Homasters-max/SRA#123",
+  "group": "ai-claude-code",
+  "url": "https://github.com/Homasters-max/SRA/pull/123",
+  "diff_lines": 228,
+  "files_scanned": 10,
+  "seconds": 0.003,
+  "offline_seconds": 0.0031,
+  "findings": [],
+  "notes": []
+ },
+ {
+  "id": "alo0806/portfolio#17",
+  "group": "ai-claude-code",
+  "url": "https://github.com/alo0806/portfolio/pull/17",
+  "diff_lines": 324,
+  "files_scanned": 11,
+  "seconds": 0.003,
+  "offline_seconds": 0.0034,
+  "findings": [
+   {
+    "rule": "risky.no-tests",
+    "severity": "low",
+    "file": "src/components/player/PlayerBar.jsx",
+    "line": null,
+    "message": "81 line(s) of source code were added across 4 file(s), but no tests were added or changed.",
+    "fix": "Add a test that exercises the new behaviour (including a failure case)."
+   }
+  ],
+  "notes": []
+ },
+ {
+  "id": "2witstudios/daisydebate#174",
+  "group": "ai-claude-code",
+  "url": "https://github.com/2witstudios/daisydebate/pull/174",
+  "diff_lines": 2600,
+  "files_scanned": 33,
+  "seconds": 0.312,
+  "offline_seconds": 0.044,
+  "findings": [],
+  "notes": []
+ },
+ {
+  "id": "devbasex/ai-plugins#1577",
+  "group": "ai-claude-code",
+  "url": "https://github.com/devbasex/ai-plugins/pull/1577",
+  "diff_lines": 501,
+  "files_scanned": 10,
+  "seconds": 0.007,
+  "offline_seconds": 0.0076,
+  "findings": [],
+  "notes": []
+ },
+ {
+  "id": "wangjohn/agent-archive#235",
+  "group": "ai-claude-code",
+  "url": "https://github.com/wangjohn/agent-archive/pull/235",
+  "diff_lines": 225,
+  "files_scanned": 7,
+  "seconds": 0.004,
+  "offline_seconds": 0.0037,
+  "findings": [],
+  "notes": []
+ },
+ {
+  "id": "segurolotengopy/ChatbotRAG#9",
+  "group": "ai-claude-code",
+  "url": "https://github.com/segurolotengopy/ChatbotRAG/pull/9",
+  "diff_lines": 12,
+  "files_scanned": 1,
+  "seconds": 0.0,
+  "offline_seconds": 0.0002,
+  "findings": [],
+  "notes": []
+ },
+ {
+  "id": "monarch-initiative/dismech#13249",
+  "group": "ai-claude-code",
+  "url": "https://github.com/monarch-initiative/dismech/pull/13249",
+  "diff_lines": 2374,
+  "files_scanned": 15,
+  "seconds": 0.123,
+  "offline_seconds": 0.1217,
+  "findings": [],
+  "notes": []
+ },
+ {
+  "id": "SarelJvR2024/squawk#75",
+  "group": "ai-claude-code",
+  "url": "https://github.com/SarelJvR2024/squawk/pull/75",
+  "diff_lines": 2916,
+  "files_scanned": 28,
+  "seconds": 0.043,
+  "offline_seconds": 0.0426,
+  "findings": [],
+  "notes": []
+ },
+ {
+  "id": "emmanuel-mendez/emmanuel-mendez-website#42",
+  "group": "ai-copilot-agent",
+  "url": "https://github.com/emmanuel-mendez/emmanuel-mendez-website/pull/42",
+  "diff_lines": 832,
+  "files_scanned": 19,
+  "seconds": 0.703,
+  "offline_seconds": 0.0144,
+  "findings": [],
+  "notes": []
+ },
+ {
+  "id": "goataka/studri#9",
+  "group": "ai-copilot-agent",
+  "url": "https://github.com/goataka/studri/pull/9",
+  "diff_lines": 1433,
+  "files_scanned": 13,
+  "seconds": 0.776,
+  "offline_seconds": 0.0246,
+  "findings": [],
+  "notes": []
+ },
+ {
+  "id": "mikefarah/yq#2886",
+  "group": "ai-copilot-agent",
+  "url": "https://github.com/mikefarah/yq/pull/2886",
+  "diff_lines": 337,
+  "files_scanned": 7,
+  "seconds": 0.002,
+  "offline_seconds": 0.002,
+  "findings": [],
+  "notes": []
+ },
+ {
+  "id": "jrod-md/FirePA#2",
+  "group": "ai-copilot-agent",
+  "url": "https://github.com/jrod-md/FirePA/pull/2",
+  "diff_lines": 60,
+  "files_scanned": 2,
+  "seconds": 0.0,
+  "offline_seconds": 0.0003,
+  "findings": [],
+  "notes": []
+ },
+ {
+  "id": "bolt2525/bioskintech#1",
+  "group": "ai-copilot-agent",
+  "url": "https://github.com/bolt2525/bioskintech/pull/1",
+  "diff_lines": 938,
+  "files_scanned": 5,
+  "seconds": 0.308,
+  "offline_seconds": 0.0274,
+  "findings": [
+   {
+    "rule": "risky.no-tests",
+    "severity": "low",
+    "file": "src/components/admin/ContractGenerator.tsx",
+    "line": null,
+    "message": "458 line(s) of source code were added across 2 file(s), but no tests were added or changed.",
+    "fix": "Add a test that exercises the new behaviour (including a failure case)."
+   }
+  ],
+  "notes": []
+ },
+ {
+  "id": "Tonic-n-Jin/Data-Validation#1",
+  "group": "ai-copilot-agent",
+  "url": "https://github.com/Tonic-n-Jin/Data-Validation/pull/1",
+  "diff_lines": 479,
+  "files_scanned": 4,
+  "seconds": 0.007,
+  "offline_seconds": 0.0068,
+  "findings": [],
+  "notes": []
+ },
+ {
+  "id": "Crack8502pl/der-mag-platform#676",
+  "group": "ai-copilot-agent",
+  "url": "https://github.com/Crack8502pl/der-mag-platform/pull/676",
+  "diff_lines": 1113,
+  "files_scanned": 6,
+  "seconds": 0.208,
+  "offline_seconds": 0.0259,
+  "findings": [],
+  "notes": []
+ },
+ {
+  "id": "E3SM-Project/containers#102",
+  "group": "ai-copilot-agent",
+  "url": "https://github.com/E3SM-Project/containers/pull/102",
+  "diff_lines": 216,
+  "files_scanned": 3,
+  "seconds": 0.003,
+  "offline_seconds": 0.0031,
+  "findings": [
+   {
+    "rule": "risky.no-tests",
+    "severity": "low",
+    "file": "scripts/check-oci-metadata.py",
+    "line": null,
+    "message": "71 line(s) of source code were added across 1 file(s), but no tests were added or changed.",
+    "fix": "Add a test that exercises the new behaviour (including a failure case)."
+   }
+  ],
+  "notes": []
+ },
+ {
+  "id": "almaranteManuel/portfolio#2",
+  "group": "ai-copilot-agent",
+  "url": "https://github.com/almaranteManuel/portfolio/pull/2",
+  "diff_lines": 26,
+  "files_scanned": 2,
+  "seconds": 0.0,
+  "offline_seconds": 0.0001,
+  "findings": [],
+  "notes": []
+ },
+ {
+  "id": "mgmodell/team-diagnose#2",
+  "group": "ai-copilot-agent",
+  "url": "https://github.com/mgmodell/team-diagnose/pull/2",
+  "diff_lines": 131,
+  "files_scanned": 5,
+  "seconds": 0.002,
+  "offline_seconds": 0.0019,
+  "findings": [],
+  "notes": []
+ },
+ {
+  "id": "jonathanvdc/wc3#1",
+  "group": "ai-copilot-agent",
+  "url": "https://github.com/jonathanvdc/wc3/pull/1",
+  "diff_lines": 90,
+  "files_scanned": 4,
+  "seconds": 0.001,
+  "offline_seconds": 0.0011,
+  "findings": [
+   {
+    "rule": "risky.no-tests",
+    "severity": "low",
+    "file": "crates/wc3/src/blp/image/indexed.rs",
+    "line": null,
+    "message": "19 line(s) of source code were added across 3 file(s), but no tests were added or changed.",
+    "fix": "Add a test that exercises the new behaviour (including a failure case)."
+   }
+  ],
+  "notes": []
+ },
+ {
+  "id": "u-root/u-root#3771",
+  "group": "ai-copilot-agent",
+  "url": "https://github.com/u-root/u-root/pull/3771",
+  "diff_lines": 443,
+  "files_scanned": 4,
+  "seconds": 0.007,
+  "offline_seconds": 0.0071,
+  "findings": [],
+  "notes": []
+ },
+ {
+  "id": "frtpereira/meta-radar#142",
+  "group": "ai-copilot-agent",
+  "url": "https://github.com/frtpereira/meta-radar/pull/142",
+  "diff_lines": 523,
+  "files_scanned": 7,
+  "seconds": 0.009,
+  "offline_seconds": 0.0088,
+  "findings": [],
+  "notes": []
+ },
+ {
+  "id": "zamays/Planted#60",
+  "group": "ai-copilot-agent",
+  "url": "https://github.com/zamays/Planted/pull/60",
+  "diff_lines": 96,
+  "files_scanned": 1,
+  "seconds": 0.002,
+  "offline_seconds": 0.0015,
+  "findings": [],
+  "notes": []
+ },
+ {
+  "id": "lhuisaazevedo-boop/Pure3XEngine#2",
+  "group": "ai-copilot-agent",
+  "url": "https://github.com/lhuisaazevedo-boop/Pure3XEngine/pull/2",
+  "diff_lines": 56,
+  "files_scanned": 1,
+  "seconds": 0.001,
+  "offline_seconds": 0.0008,
+  "findings": [],
+  "notes": []
+ },
+ {
+  "id": "srz-zumix/iutest#740",
+  "group": "ai-copilot-agent",
+  "url": "https://github.com/srz-zumix/iutest/pull/740",
+  "diff_lines": 290,
+  "files_scanned": 10,
+  "seconds": 0.004,
+  "offline_seconds": 0.0039,
+  "findings": [],
+  "notes": []
+ },
+ {
+  "id": "darksilenxe/auto-bughunter#428",
+  "group": "ai-copilot-agent",
+  "url": "https://github.com/darksilenxe/auto-bughunter/pull/428",
+  "diff_lines": 1010,
+  "files_scanned": 10,
+  "seconds": 0.014,
+  "offline_seconds": 0.014,
+  "findings": [],
+  "notes": []
+ },
+ {
+  "id": "sunnydenali/git#1",
+  "group": "ai-copilot-agent",
+  "url": "https://github.com/sunnydenali/git/pull/1",
+  "diff_lines": 1439,
+  "files_scanned": 2,
+  "seconds": 0.016,
+  "offline_seconds": 0.0154,
+  "findings": [],
+  "notes": []
+ },
+ {
+  "id": "shouter1/MoonBig#3",
+  "group": "ai-copilot-agent",
+  "url": "https://github.com/shouter1/MoonBig/pull/3",
+  "diff_lines": 211,
+  "files_scanned": 5,
+  "seconds": 0.002,
+  "offline_seconds": 0.0023,
+  "findings": [
+   {
+    "rule": "risky.no-tests",
+    "severity": "low",
+    "file": "app.js",
+    "line": null,
+    "message": "63 line(s) of source code were added across 2 file(s), but no tests were added or changed.",
+    "fix": "Add a test that exercises the new behaviour (including a failure case)."
+   }
+  ],
+  "notes": []
+ },
+ {
+  "id": "andrebezadapg/repo_prueba_publica_A-I#1",
+  "group": "ai-copilot-agent",
+  "url": "https://github.com/andrebezadapg/repo_prueba_publica_A-I/pull/1",
+  "diff_lines": 96,
+  "files_scanned": 3,
+  "seconds": 0.001,
+  "offline_seconds": 0.0011,
+  "findings": [],
+  "notes": []
+ },
+ {
+  "id": "tobiashochguertel/taskbook#9",
+  "group": "ai-copilot-agent",
+  "url": "https://github.com/tobiashochguertel/taskbook/pull/9",
+  "diff_lines": 75,
+  "files_scanned": 4,
+  "seconds": 0.001,
+  "offline_seconds": 0.0006,
+  "findings": [],
+  "notes": []
+ },
+ {
+  "id": "nchang90/azure-sre-agent-platform-engineering-lab#155",
+  "group": "ai-copilot-agent",
+  "url": "https://github.com/nchang90/azure-sre-agent-platform-engineering-lab/pull/155",
+  "diff_lines": 13,
+  "files_scanned": 1,
+  "seconds": 0.0,
+  "offline_seconds": 0.0002,
+  "findings": [],
+  "notes": []
+ },
+ {
+  "id": "salteadorneo/agendados#34",
+  "group": "ai-copilot-agent",
+  "url": "https://github.com/salteadorneo/agendados/pull/34",
+  "diff_lines": 21,
+  "files_scanned": 1,
+  "seconds": 0.0,
+  "offline_seconds": 0.0004,
+  "findings": [],
+  "notes": []
+ },
+ {
+  "id": "microsoft/CookInlet_Belugas#9",
+  "group": "ai-copilot-agent",
+  "url": "https://github.com/microsoft/CookInlet_Belugas/pull/9",
+  "diff_lines": 41,
+  "files_scanned": 2,
+  "seconds": 0.0,
+  "offline_seconds": 0.0003,
+  "findings": [],
+  "notes": []
+ },
+ {
+  "id": "Mortyr92/family-organizer#5",
+  "group": "ai-copilot-agent",
+  "url": "https://github.com/Mortyr92/family-organizer/pull/5",
+  "diff_lines": 19,
+  "files_scanned": 1,
+  "seconds": 0.0,
+  "offline_seconds": 0.0004,
+  "findings": [],
+  "notes": []
+ },
+ {
+  "id": "shizukutanaka/Qui-Browser#629",
+  "group": "ai-devin",
+  "url": "https://github.com/shizukutanaka/Qui-Browser/pull/629",
+  "diff_lines": 657,
+  "files_scanned": 5,
+  "seconds": 0.011,
+  "offline_seconds": 0.0113,
+  "findings": [],
+  "notes": []
+ },
+ {
+  "id": "VibeBB/dashboard-agent#14",
+  "group": "ai-devin",
+  "url": "https://github.com/VibeBB/dashboard-agent/pull/14",
+  "diff_lines": 315,
+  "files_scanned": 6,
+  "seconds": 0.003,
+  "offline_seconds": 0.0025,
+  "findings": [],
+  "notes": []
+ },
+ {
+  "id": "VibeBB/simulation-agent#13",
+  "group": "ai-devin",
+  "url": "https://github.com/VibeBB/simulation-agent/pull/13",
+  "diff_lines": 293,
+  "files_scanned": 7,
+  "seconds": 0.002,
+  "offline_seconds": 0.0021,
+  "findings": [],
+  "notes": []
+ },
+ {
+  "id": "Eruldin/Honor-Meselesi#159",
+  "group": "ai-devin",
+  "url": "https://github.com/Eruldin/Honor-Meselesi/pull/159",
+  "diff_lines": 100,
+  "files_scanned": 6,
+  "seconds": 0.001,
+  "offline_seconds": 0.0014,
+  "findings": [],
+  "notes": []
+ },
+ {
+  "id": "diggerhq/opencomputer#825",
+  "group": "ai-devin",
+  "url": "https://github.com/diggerhq/opencomputer/pull/825",
+  "diff_lines": 244,
+  "files_scanned": 5,
+  "seconds": 0.003,
+  "offline_seconds": 0.0034,
+  "findings": [],
+  "notes": []
+ },
+ {
+  "id": "kyrakgray/smbj-rpc#2",
+  "group": "ai-devin",
+  "url": "https://github.com/kyrakgray/smbj-rpc/pull/2",
+  "diff_lines": 630,
+  "files_scanned": 36,
+  "seconds": 0.003,
+  "offline_seconds": 0.0029,
+  "findings": [],
+  "notes": []
+ },
+ {
+  "id": "armysheild/idk#9",
+  "group": "ai-devin",
+  "url": "https://github.com/armysheild/idk/pull/9",
+  "diff_lines": 769,
+  "files_scanned": 8,
+  "seconds": 0.007,
+  "offline_seconds": 0.0069,
+  "findings": [],
+  "notes": []
+ },
+ {
+  "id": "artificial-hedge/dipcatcher#544",
+  "group": "ai-devin",
+  "url": "https://github.com/artificial-hedge/dipcatcher/pull/544",
+  "diff_lines": 1010,
+  "files_scanned": 7,
+  "seconds": 0.039,
+  "offline_seconds": 0.0387,
+  "findings": [],
+  "notes": []
+ },
+ {
+  "id": "Marcolino0531/crm-escolar#459",
+  "group": "ai-devin",
+  "url": "https://github.com/Marcolino0531/crm-escolar/pull/459",
+  "diff_lines": 1340,
+  "files_scanned": 9,
+  "seconds": 0.966,
+  "offline_seconds": 0.0273,
+  "findings": [],
+  "notes": []
+ },
+ {
+  "id": "Cognition-Partner-Workshops/dbx-redshift-migration#3",
+  "group": "ai-devin",
+  "url": "https://github.com/Cognition-Partner-Workshops/dbx-redshift-migration/pull/3",
+  "diff_lines": 95,
+  "files_scanned": 2,
+  "seconds": 0.004,
+  "offline_seconds": 0.0038,
+  "findings": [],
+  "notes": []
+ },
+ {
+  "id": "COG-GTM/otterworks#344",
+  "group": "ai-devin",
+  "url": "https://github.com/COG-GTM/otterworks/pull/344",
+  "diff_lines": 560,
+  "files_scanned": 10,
+  "seconds": 0.008,
+  "offline_seconds": 0.0078,
+  "findings": [],
+  "notes": []
+ },
+ {
+  "id": "coah80/wii-ipl#425",
+  "group": "ai-devin",
+  "url": "https://github.com/coah80/wii-ipl/pull/425",
+  "diff_lines": 147,
+  "files_scanned": 5,
+  "seconds": 0.003,
+  "offline_seconds": 0.0034,
+  "findings": [
+   {
+    "rule": "risky.no-tests",
+    "severity": "low",
+    "file": "libs/RevoEX/src/net/aes.c",
+    "line": null,
+    "message": "20 line(s) of source code were added across 4 file(s), but no tests were added or changed.",
+    "fix": "Add a test that exercises the new behaviour (including a failure case)."
+   }
+  ],
+  "notes": []
+ },
+ {
+  "id": "drfobusan-debug/payoff-pitch-#429",
+  "group": "ai-devin",
+  "url": "https://github.com/drfobusan-debug/payoff-pitch-/pull/429",
+  "diff_lines": 862,
+  "files_scanned": 10,
+  "seconds": 0.014,
+  "offline_seconds": 0.0136,
+  "findings": [],
+  "notes": []
+ },
+ {
+  "id": "blaxel-ai/docs#821",
+  "group": "ai-devin",
+  "url": "https://github.com/blaxel-ai/docs/pull/821",
+  "diff_lines": 221,
+  "files_scanned": 4,
+  "seconds": 0.005,
+  "offline_seconds": 0.0054,
+  "findings": [],
+  "notes": []
+ },
+ {
+  "id": "LayerNorm/overlay-web#163",
+  "group": "ai-devin",
+  "url": "https://github.com/LayerNorm/overlay-web/pull/163",
+  "diff_lines": 412,
+  "files_scanned": 1,
+  "seconds": 0.012,
+  "offline_seconds": 0.012,
+  "findings": [],
+  "notes": []
+ },
+ {
+  "id": "bitbaum/orangecat#1201",
+  "group": "ai-cursor",
+  "url": "https://github.com/bitbaum/orangecat/pull/1201",
+  "diff_lines": 113,
+  "files_scanned": 6,
+  "seconds": 0.004,
+  "offline_seconds": 0.0037,
+  "findings": [],
+  "notes": []
+ },
+ {
+  "id": "elie222/rakazo#1110",
+  "group": "ai-cursor",
+  "url": "https://github.com/elie222/rakazo/pull/1110",
+  "diff_lines": 222,
+  "files_scanned": 4,
+  "seconds": 0.232,
+  "offline_seconds": 0.0068,
+  "findings": [],
+  "notes": []
+ },
+ {
+  "id": "bitbaum/solon#241",
+  "group": "ai-cursor",
+  "url": "https://github.com/bitbaum/solon/pull/241",
+  "diff_lines": 865,
+  "files_scanned": 17,
+  "seconds": 0.011,
+  "offline_seconds": 0.0097,
+  "findings": [],
+  "notes": []
+ },
+ {
+  "id": "bitbaum/heidi#159",
+  "group": "ai-cursor",
+  "url": "https://github.com/bitbaum/heidi/pull/159",
+  "diff_lines": 2217,
+  "files_scanned": 23,
+  "seconds": 0.034,
+  "offline_seconds": 0.0334,
+  "findings": [],
+  "notes": []
+ },
+ {
+  "id": "jmrplens/libgen-mcp#275",
+  "group": "ai-cursor",
+  "url": "https://github.com/jmrplens/libgen-mcp/pull/275",
+  "diff_lines": 1482,
+  "files_scanned": 44,
+  "seconds": 0.018,
+  "offline_seconds": 0.0179,
+  "findings": [],
+  "notes": []
+ },
+ {
+  "id": "Josefjosefjosef/filtr#11508",
+  "group": "ai-cursor",
+  "url": "https://github.com/Josefjosefjosef/filtr/pull/11508",
+  "diff_lines": 490,
+  "files_scanned": 30,
+  "seconds": 0.005,
+  "offline_seconds": 0.0047,
+  "findings": [
+   {
+    "rule": "risky.no-tests",
+    "severity": "low",
+    "file": "scripts/iu-affiliate-categories-30-structure-guard-v1.mjs",
+    "line": null,
+    "message": "59 line(s) of source code were added across 28 file(s), but no tests were added or changed.",
+    "fix": "Add a test that exercises the new behaviour (including a failure case)."
+   }
+  ],
+  "notes": []
+ },
+ {
+  "id": "cocofhu/grasp#695",
+  "group": "ai-cursor",
+  "url": "https://github.com/cocofhu/grasp/pull/695",
+  "diff_lines": 47,
+  "files_scanned": 2,
+  "seconds": 0.177,
+  "offline_seconds": 0.0033,
+  "findings": [],
+  "notes": []
+ },
+ {
+  "id": "abue-ammar/tinycast#1252",
+  "group": "ai-cursor",
+  "url": "https://github.com/abue-ammar/tinycast/pull/1252",
+  "diff_lines": 162,
+  "files_scanned": 6,
+  "seconds": 0.003,
+  "offline_seconds": 0.0042,
+  "findings": [],
+  "notes": []
+ },
+ {
+  "id": "opendatahub-io/python-package-skills#37",
+  "group": "ai-cursor",
+  "url": "https://github.com/opendatahub-io/python-package-skills/pull/37",
+  "diff_lines": 502,
+  "files_scanned": 11,
+  "seconds": 0.006,
+  "offline_seconds": 0.0059,
+  "findings": [],
+  "notes": []
+ },
+ {
+  "id": "open-gsd/gsd-path#255",
+  "group": "ai-cursor",
+  "url": "https://github.com/open-gsd/gsd-path/pull/255",
+  "diff_lines": 490,
+  "files_scanned": 16,
+  "seconds": 0.01,
+  "offline_seconds": 0.0091,
+  "findings": [],
+  "notes": []
+ },
+ {
+  "id": "django/django#22055",
+  "group": "no-ai-marker",
+  "url": "https://github.com/django/django/pull/22055",
+  "diff_lines": 311,
+  "files_scanned": 10,
+  "seconds": 0.009,
+  "offline_seconds": 0.0089,
+  "findings": [],
+  "notes": []
+ },
+ {
+  "id": "django/django#22054",
+  "group": "no-ai-marker",
+  "url": "https://github.com/django/django/pull/22054",
+  "diff_lines": 48,
+  "files_scanned": 3,
+  "seconds": 0.007,
+  "offline_seconds": 0.0073,
+  "findings": [],
+  "notes": []
+ },
+ {
+  "id": "pallets/flask#6162",
+  "group": "no-ai-marker",
+  "url": "https://github.com/pallets/flask/pull/6162",
+  "diff_lines": 35,
+  "files_scanned": 1,
+  "seconds": 0.001,
+  "offline_seconds": 0.0004,
+  "findings": [],
+  "notes": []
+ },
+ {
+  "id": "pallets/flask#6159",
+  "group": "no-ai-marker",
+  "url": "https://github.com/pallets/flask/pull/6159",
+  "diff_lines": 13,
+  "files_scanned": 1,
+  "seconds": 0.0,
+  "offline_seconds": 0.0002,
+  "findings": [],
+  "notes": []
+ },
+ {
+  "id": "fastapi/fastapi#16421",
+  "group": "no-ai-marker",
+  "url": "https://github.com/fastapi/fastapi/pull/16421",
+  "diff_lines": 15,
+  "files_scanned": 1,
+  "seconds": 0.003,
+  "offline_seconds": 0.0028,
+  "findings": [],
+  "notes": []
+ },
+ {
+  "id": "fastapi/fastapi#16420",
+  "group": "no-ai-marker",
+  "url": "https://github.com/fastapi/fastapi/pull/16420",
+  "diff_lines": 13,
+  "files_scanned": 1,
+  "seconds": 0.003,
+  "offline_seconds": 0.0027,
+  "findings": [],
+  "notes": []
+ },
+ {
+  "id": "pandas-dev/pandas#69989",
+  "group": "no-ai-marker",
+  "url": "https://github.com/pandas-dev/pandas/pull/69989",
+  "diff_lines": 68,
+  "files_scanned": 3,
+  "seconds": 0.003,
+  "offline_seconds": 0.003,
+  "findings": [],
+  "notes": []
+ },
+ {
+  "id": "pandas-dev/pandas#69988",
+  "group": "no-ai-marker",
+  "url": "https://github.com/pandas-dev/pandas/pull/69988",
+  "diff_lines": 123,
+  "files_scanned": 3,
+  "seconds": 0.003,
+  "offline_seconds": 0.0034,
+  "findings": [],
+  "notes": []
+ },
+ {
+  "id": "scikit-learn/scikit-learn#35055",
+  "group": "no-ai-marker",
+  "url": "https://github.com/scikit-learn/scikit-learn/pull/35055",
+  "diff_lines": 792,
+  "files_scanned": 4,
+  "seconds": 0.013,
+  "offline_seconds": 0.0132,
+  "findings": [],
+  "notes": []
+ },
+ {
+  "id": "scikit-learn/scikit-learn#35054",
+  "group": "no-ai-marker",
+  "url": "https://github.com/scikit-learn/scikit-learn/pull/35054",
+  "diff_lines": 10,
+  "files_scanned": 1,
+  "seconds": 0.002,
+  "offline_seconds": 0.0015,
+  "findings": [],
+  "notes": []
+ },
+ {
+  "id": "apache/airflow#73998",
+  "group": "no-ai-marker",
+  "url": "https://github.com/apache/airflow/pull/73998",
+  "diff_lines": 236,
+  "files_scanned": 5,
+  "seconds": 0.018,
+  "offline_seconds": 0.0166,
+  "findings": [],
+  "notes": []
+ },
+ {
+  "id": "apache/airflow#73996",
+  "group": "no-ai-marker",
+  "url": "https://github.com/apache/airflow/pull/73996",
+  "diff_lines": 24,
+  "files_scanned": 1,
+  "seconds": 0.166,
+  "offline_seconds": 0.0233,
+  "findings": [],
+  "notes": []
+ },
+ {
+  "id": "home-assistant/core#183819",
+  "group": "no-ai-marker",
+  "url": "https://github.com/home-assistant/core/pull/183819",
+  "diff_lines": 250,
+  "files_scanned": 6,
+  "seconds": 0.026,
+  "offline_seconds": 0.0261,
+  "findings": [],
+  "notes": []
+ },
+ {
+  "id": "home-assistant/core#183818",
+  "group": "no-ai-marker",
+  "url": "https://github.com/home-assistant/core/pull/183818",
+  "diff_lines": 184,
+  "files_scanned": 4,
+  "seconds": 0.096,
+  "offline_seconds": 0.0299,
+  "findings": [
+   {
+    "rule": "package.new",
+    "severity": "medium",
+    "file": "tests/components/axle_energy/test_diagnostics.py",
+    "line": 6,
+    "message": "\"aioaxlevpp\" was first published on PyPI only 23 day(s) ago (3 release(s)). Attackers register names that AI tools hallucinate, so brand-new packages deserve a look.",
+    "fix": "Check the package's source and maintainer before installing it."
+   }
+  ],
+  "notes": []
+ },
+ {
+  "id": "huggingface/transformers#49215",
+  "group": "no-ai-marker",
+  "url": "https://github.com/huggingface/transformers/pull/49215",
+  "diff_lines": 226,
+  "files_scanned": 3,
+  "seconds": 0.008,
+  "offline_seconds": 0.0077,
+  "findings": [],
+  "notes": []
+ },
+ {
+  "id": "huggingface/transformers#49212",
+  "group": "no-ai-marker",
+  "url": "https://github.com/huggingface/transformers/pull/49212",
+  "diff_lines": 26,
+  "files_scanned": 2,
+  "seconds": 0.006,
+  "offline_seconds": 0.006,
+  "findings": [],
+  "notes": []
+ },
+ {
+  "id": "langchain-ai/langchain#40933",
+  "group": "no-ai-marker",
+  "url": "https://github.com/langchain-ai/langchain/pull/40933",
+  "diff_lines": 77,
+  "files_scanned": 3,
+  "seconds": 0.003,
+  "offline_seconds": 0.0033,
+  "findings": [],
+  "notes": []
+ },
+ {
+  "id": "langchain-ai/langchain#40930",
+  "group": "no-ai-marker",
+  "url": "https://github.com/langchain-ai/langchain/pull/40930",
+  "diff_lines": 42,
+  "files_scanned": 2,
+  "seconds": 0.003,
+  "offline_seconds": 0.0033,
+  "findings": [],
+  "notes": []
+ },
+ {
+  "id": "getsentry/sentry#126117",
+  "group": "no-ai-marker",
+  "url": "https://github.com/getsentry/sentry/pull/126117",
+  "diff_lines": 128,
+  "files_scanned": 2,
+  "seconds": 0.022,
+  "offline_seconds": 0.0225,
+  "findings": [],
+  "notes": []
+ },
+ {
+  "id": "getsentry/sentry#126116",
+  "group": "no-ai-marker",
+  "url": "https://github.com/getsentry/sentry/pull/126116",
+  "diff_lines": 297,
+  "files_scanned": 6,
+  "seconds": 0.189,
+  "offline_seconds": 0.0322,
+  "findings": [
+   {
+    "rule": "package.not-found",
+    "severity": "medium",
+    "file": "static/app/views/investigations/detail/presence.spec.tsx",
+    "line": 1,
+    "message": "Imports \"sentry-fixture/member\", but no package called \"sentry-fixture\" exists on npm.",
+    "fix": "Check that this module really exists (it may be hallucinated) or that it's part of your project."
+   },
+   {
+    "rule": "package.not-found",
+    "severity": "medium",
+    "file": "static/app/views/investigations/detail/presence.spec.tsx",
+    "line": 4,
+    "message": "Imports \"sentry-test/reactTestingLibrary\", but no package called \"sentry-test\" exists on npm.",
+    "fix": "Check that this module really exists (it may be hallucinated) or that it's part of your project."
+   }
+  ],
+  "notes": []
+ },
+ {
+  "id": "python/cpython#158538",
+  "group": "no-ai-marker",
+  "url": "https://github.com/python/cpython/pull/158538",
+  "diff_lines": 52,
+  "files_scanned": 1,
+  "seconds": 0.005,
+  "offline_seconds": 0.0051,
+  "findings": [],
+  "notes": []
+ },
+ {
+  "id": "python/cpython#158537",
+  "group": "no-ai-marker",
+  "url": "https://github.com/python/cpython/pull/158537",
+  "diff_lines": 52,
+  "files_scanned": 1,
+  "seconds": 0.005,
+  "offline_seconds": 0.0052,
+  "findings": [],
+  "notes": []
+ },
+ {
+  "id": "expressjs/express#7497",
+  "group": "no-ai-marker",
+  "url": "https://github.com/expressjs/express/pull/7497",
+  "diff_lines": 13,
+  "files_scanned": 1,
+  "seconds": 0.0,
+  "offline_seconds": 0.0002,
+  "findings": [],
+  "notes": []
+ },
+ {
+  "id": "expressjs/express#7496",
+  "group": "no-ai-marker",
+  "url": "https://github.com/expressjs/express/pull/7496",
+  "diff_lines": 15,
+  "files_scanned": 1,
+  "seconds": 0.0,
+  "offline_seconds": 0.0002,
+  "findings": [],
+  "notes": []
+ },
+ {
+  "id": "vercel/next.js#99508",
+  "group": "no-ai-marker",
+  "url": "https://github.com/vercel/next.js/pull/99508",
+  "diff_lines": 314,
+  "files_scanned": 11,
+  "seconds": 0.038,
+  "offline_seconds": 0.0382,
+  "findings": [],
+  "notes": []
+ },
+ {
+  "id": "vercel/next.js#99507",
+  "group": "no-ai-marker",
+  "url": "https://github.com/vercel/next.js/pull/99507",
+  "diff_lines": 352,
+  "files_scanned": 11,
+  "seconds": 0.038,
+  "offline_seconds": 0.0384,
+  "findings": [],
+  "notes": []
+ },
+ {
+  "id": "vuejs/core#15728",
+  "group": "no-ai-marker",
+  "url": "https://github.com/vuejs/core/pull/15728",
+  "diff_lines": 128,
+  "files_scanned": 2,
+  "seconds": 0.002,
+  "offline_seconds": 0.0016,
+  "findings": [],
+  "notes": []
+ },
+ {
+  "id": "vuejs/core#15726",
+  "group": "no-ai-marker",
+  "url": "https://github.com/vuejs/core/pull/15726",
+  "diff_lines": 242,
+  "files_scanned": 4,
+  "seconds": 0.003,
+  "offline_seconds": 0.0026,
+  "findings": [],
+  "notes": []
+ },
+ {
+  "id": "nodejs/node#66424",
+  "group": "no-ai-marker",
+  "url": "https://github.com/nodejs/node/pull/66424",
+  "diff_lines": 1028,
+  "files_scanned": 5,
+  "seconds": 0.063,
+  "offline_seconds": 0.0635,
+  "findings": [],
+  "notes": []
+ },
+ {
+  "id": "nodejs/node#66423",
+  "group": "no-ai-marker",
+  "url": "https://github.com/nodejs/node/pull/66423",
+  "diff_lines": 30,
+  "files_scanned": 2,
+  "seconds": 0.054,
+  "offline_seconds": 0.0546,
+  "findings": [],
+  "notes": []
+ },
+ {
+  "id": "sveltejs/svelte#18893",
+  "group": "no-ai-marker",
+  "url": "https://github.com/sveltejs/svelte/pull/18893",
+  "diff_lines": 221,
+  "files_scanned": 11,
+  "seconds": 0.012,
+  "offline_seconds": 0.0119,
+  "findings": [],
+  "notes": []
+ },
+ {
+  "id": "sveltejs/svelte#18892",
+  "group": "no-ai-marker",
+  "url": "https://github.com/sveltejs/svelte/pull/18892",
+  "diff_lines": 90,
+  "files_scanned": 4,
+  "seconds": 0.011,
+  "offline_seconds": 0.0111,
+  "findings": [],
+  "notes": []
+ },
+ {
+  "id": "nestjs/nest#17961",
+  "group": "no-ai-marker",
+  "url": "https://github.com/nestjs/nest/pull/17961",
+  "diff_lines": 215,
+  "files_scanned": 2,
+  "seconds": 0.004,
+  "offline_seconds": 0.0038,
+  "findings": [],
+  "notes": []
+ },
+ {
+  "id": "nestjs/nest#17959",
+  "group": "no-ai-marker",
+  "url": "https://github.com/nestjs/nest/pull/17959",
+  "diff_lines": 120,
+  "files_scanned": 2,
+  "seconds": 0.003,
+  "offline_seconds": 0.003,
+  "findings": [],
+  "notes": []
+ },
+ {
+  "id": "supabase/supabase#51116",
+  "group": "no-ai-marker",
+  "url": "https://github.com/supabase/supabase/pull/51116",
+  "diff_lines": 25,
+  "files_scanned": 1,
+  "seconds": 0.018,
+  "offline_seconds": 0.0186,
+  "findings": [],
+  "notes": []
+ },
+ {
+  "id": "supabase/supabase#51115",
+  "group": "no-ai-marker",
+  "url": "https://github.com/supabase/supabase/pull/51115",
+  "diff_lines": 12,
+  "files_scanned": 1,
+  "seconds": 0.018,
+  "offline_seconds": 0.0179,
+  "findings": [],
+  "notes": []
+ },
+ {
+  "id": "strapi/strapi#27885",
+  "group": "no-ai-marker",
+  "url": "https://github.com/strapi/strapi/pull/27885",
+  "diff_lines": 24,
+  "files_scanned": 1,
+  "seconds": 0.008,
+  "offline_seconds": 0.0077,
+  "findings": [],
+  "notes": []
+ },
+ {
+  "id": "strapi/strapi#27880",
+  "group": "no-ai-marker",
+  "url": "https://github.com/strapi/strapi/pull/27880",
+  "diff_lines": 2426,
+  "files_scanned": 47,
+  "seconds": 1.174,
+  "offline_seconds": 0.018,
+  "findings": [],
+  "notes": []
+ },
+ {
+  "id": "microsoft/vscode#339022",
+  "group": "no-ai-marker",
+  "url": "https://github.com/microsoft/vscode/pull/339022",
+  "diff_lines": 130,
+  "files_scanned": 2,
+  "seconds": 0.024,
+  "offline_seconds": 0.0246,
+  "findings": [],
+  "notes": []
+ },
+ {
+  "id": "microsoft/vscode#339021",
+  "group": "no-ai-marker",
+  "url": "https://github.com/microsoft/vscode/pull/339021",
+  "diff_lines": 667,
+  "files_scanned": 3,
+  "seconds": 0.031,
+  "offline_seconds": 0.0299,
+  "findings": [],
+  "notes": []
+ },
+ {
+  "id": "grafana/grafana#133935",
+  "group": "no-ai-marker",
+  "url": "https://github.com/grafana/grafana/pull/133935",
+  "diff_lines": 482,
+  "files_scanned": 7,
+  "seconds": 0.258,
+  "offline_seconds": 0.036,
+  "findings": [],
+  "notes": []
+ },
+ {
+  "id": "grafana/grafana#133934",
+  "group": "no-ai-marker",
+  "url": "https://github.com/grafana/grafana/pull/133934",
+  "diff_lines": 523,
+  "files_scanned": 5,
+  "seconds": 0.029,
+  "offline_seconds": 0.028,
+  "findings": [],
+  "notes": []
+ },
+ {
+  "id": "kubernetes/kubernetes#142576",
+  "group": "no-ai-marker",
+  "url": "https://github.com/kubernetes/kubernetes/pull/142576",
+  "diff_lines": 504,
+  "files_scanned": 3,
+  "seconds": 0.04,
+  "offline_seconds": 0.0394,
+  "findings": [],
+  "notes": []
+ },
+ {
+  "id": "kubernetes/kubernetes#142575",
+  "group": "no-ai-marker",
+  "url": "https://github.com/kubernetes/kubernetes/pull/142575",
+  "diff_lines": 203,
+  "files_scanned": 2,
+  "seconds": 0.037,
+  "offline_seconds": 0.0385,
+  "findings": [],
+  "notes": []
+ },
+ {
+  "id": "rails/rails#58909",
+  "group": "no-ai-marker",
+  "url": "https://github.com/rails/rails/pull/58909",
+  "diff_lines": 12,
+  "files_scanned": 1,
+  "seconds": 0.005,
+  "offline_seconds": 0.0046,
+  "findings": [],
+  "notes": []
+ },
+ {
+  "id": "rails/rails#58908",
+  "group": "no-ai-marker",
+  "url": "https://github.com/rails/rails/pull/58908",
+  "diff_lines": 208,
+  "files_scanned": 16,
+  "seconds": 0.005,
+  "offline_seconds": 0.0052,
+  "findings": [],
+  "notes": []
+ },
+ {
+  "id": "mastodon/mastodon#40780",
+  "group": "no-ai-marker",
+  "url": "https://github.com/mastodon/mastodon/pull/40780",
+  "diff_lines": 341,
+  "files_scanned": 7,
+  "seconds": 0.011,
+  "offline_seconds": 0.0107,
+  "findings": [
+   {
+    "rule": "risky.no-tests",
+    "severity": "low",
+    "file": "app/javascript/mastodon/features/navigation_panel/redesign/index.tsx",
+    "line": null,
+    "message": "102 line(s) of source code were added across 4 file(s), but no tests were added or changed.",
+    "fix": "Add a test that exercises the new behaviour (including a failure case)."
+   }
+  ],
+  "notes": []
+ },
+ {
+  "id": "mastodon/mastodon#40779",
+  "group": "no-ai-marker",
+  "url": "https://github.com/mastodon/mastodon/pull/40779",
+  "diff_lines": 94,
+  "files_scanned": 5,
+  "seconds": 0.008,
+  "offline_seconds": 0.0088,
+  "findings": [],
+  "notes": []
+ },
+ {
+  "id": "discourse/discourse#44212",
+  "group": "no-ai-marker",
+  "url": "https://github.com/discourse/discourse/pull/44212",
+  "diff_lines": 12,
+  "files_scanned": 1,
+  "seconds": 0.024,
+  "offline_seconds": 0.0237,
+  "findings": [],
+  "notes": []
+ },
+ {
+  "id": "discourse/discourse#44211",
+  "group": "no-ai-marker",
+  "url": "https://github.com/discourse/discourse/pull/44211",
+  "diff_lines": 1940,
+  "files_scanned": 35,
+  "seconds": 0.039,
+  "offline_seconds": 0.0389,
+  "findings": [],
+  "notes": []
+ },
+ {
+  "id": "n8n-io/n8n#40023",
+  "group": "no-ai-marker",
+  "url": "https://github.com/n8n-io/n8n/pull/40023",
+  "diff_lines": 157,
+  "files_scanned": 4,
+  "seconds": 0.035,
+  "offline_seconds": 0.035,
+  "findings": [],
+  "notes": []
+ },
+ {
+  "id": "n8n-io/n8n#40020",
+  "group": "no-ai-marker",
+  "url": "https://github.com/n8n-io/n8n/pull/40020",
+  "diff_lines": 111,
+  "files_scanned": 2,
+  "seconds": 0.034,
+  "offline_seconds": 0.0346,
+  "findings": [],
+  "notes": []
+ }
+]

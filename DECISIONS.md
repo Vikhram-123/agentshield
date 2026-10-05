@@ -273,7 +273,87 @@ Each entry: the choice, the alternatives, and why.
   a shallow single-branch clone still worked.
 - Not yet verified on real GitHub (needs the repo to be pushed).
 
+## Step 6: benchmark (`bench/`)
+
+Full numbers: `bench/RESULTS.md`. Headline (held-out set, frozen tool):
+**precision 72% (18/25, 95% CI 52–86%)**, **recall 32/32 on planted in-scope
+problems (upper bound)**, median scan ~10 ms plus network.
+
+### 33. Mechanical PR selection
+- GitHub search for each AI tool's marker (Claude Code footer, Copilot coding
+  agent, Devin, Cursor co-author) in a fixed date window, newest first, one PR
+  per repo; plus the newest PRs from 30 popular projects with no AI marker.
+  Diffs over 3,000 lines are skipped (and counted).
+- *Why:* if I picked PRs by hand I'd (unconsciously) pick ones the tool does
+  well on. A rule that's written down can't cherry-pick.
+- In CI the repo is checked out, so `import utils` is known to be local. To
+  be fair, each repo's file list comes from a blobless clone (names only).
+
+### 34. Dev/test split (train/test, like in ML)
+- **Dev set** (142 PRs, September 2026): labeled, used to find false
+  positives, fixed, re-run. Its "after" number (74%) is optimistic.
+- **Test set** (143 PRs, August 2026): collected after all fixes; scanned
+  once with the frozen tool. Its number (72%) is the honest one.
+- *Why:* tuning on data and then reporting on the same data inflates results.
+  Reporting both, labeled, is what makes the numbers believable.
+
+### 35. What the dev set taught (36% → 74% precision)
+- 20 false positives removed, 0 true positives lost:
+  monorepo **workspace packages** (`@workspace/db`: a folder with its own
+  `package.json`), **tsconfig path aliases** (`@components/...` when there's a
+  `components/` folder and the scope isn't a public npm scope), **`bun:`**
+  imports (like `node:`), text inside a regex, **conditional test skips**
+  (`if not linux: t.Skip()` is fine: now only a skip as the test's *first
+  statement* counts), **tests renamed in place** (now only a *net loss* of
+  tests is flagged), and "authorize" in a README.
+- Lesson: a fake registry tests logic; only real monorepos show how
+  JavaScript projects actually resolve imports.
+- Fun find: Strapi's internal `vitest-config` package shares its name with a
+  public npm package that npm removed as malware, which looks like a
+  dependency-confusion attempt. In the PR it resolves to the workspace, so
+  the finding was labeled FP, but it's a real-world example of why the
+  check exists.
+
+### 36. Recall by planting problems
+- Real PRs almost never contain leaked keys or hallucinated packages, so
+  "what did it miss in real PRs" can't measure recall. Instead 32 realistic
+  problems are planted into copies of test-set PRs, among real code in files
+  of the same language.
+- Six out-of-scope cases (a key in `x = "..."`, a custom key format, a
+  short password, `cp.exec`, `DELETE` without `WHERE`, a Go module) are
+  included and all missed, which documents the limits instead of hiding them.
+- **The harness had bugs too, and fixing them was not cheating** (the tool
+  didn't change): it wrote `from fastapi-jwt-guardian import` (invalid Python),
+  planted into lockfiles and test files where the rule is deliberately off,
+  and once planted code *inside a docstring*. Each was a placement that can't
+  happen in reality. Final harness: app code only, between real code lines.
+- *Caveat:* I wrote both the rules and the plants, so 100% is an upper bound.
+
+### 37. Statistics
+- Precision with a **Wilson 95% interval**: with 25 findings, "72%" alone
+  hides that the truth could reasonably be anywhere from about 52% to 86%.
+  Wilson behaves at small n and near 0/100%, where the textbook
+  `p ± 1.96·√(p(1−p)/n)` can go below 0% or above 100%.
+- Precision is per finding; recall is per planted problem.
+
+### 38. Data hygiene
+- Diffs are **not committed** (`bench/data/` is gitignored): they're other
+  people's code, and a real leaked key would be re-published. The PR list,
+  scripts, labels and results are committed, so anyone can re-download and
+  reproduce.
+- GitHub rate-limited diff downloads (HTTP 429) during the first test-set
+  collection, and 103 PRs were silently skipped. That changes which PRs get
+  picked, so the collector now waits and retries, and the test set was
+  re-collected (before the tool was run on it).
+
+### 39. Who labeled
+- Labels are by Claude, with written criteria (`bench/LABELING.md`, fixed
+  before labeling) and a reason per finding. **Vikhram must spot-check them
+  before using the numbers on a resume.**
+
 ## Open questions (to decide with data)
+- `risky.no-tests` is most of the findings (79% precision). Should it be off
+  by default, or only fire when the repo already has tests?
 - Should plain hardcoded passwords (`password = "hunter2"`, low entropy) be
   flagged? Currently not: test code is full of them.
 - Is 30 days the right "new package" cutoff?

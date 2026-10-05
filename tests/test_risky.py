@@ -33,6 +33,10 @@ class AuthTest(unittest.TestCase):
         self.assertEqual(one("src/auth/session.ts", "const ttl = 3600;"), ["risky.auth-change"])
         self.assertEqual(one("app/login.py", "x = 1"), ["risky.auth-change"])
 
+    def test_auth_words_in_docs_are_not_guards(self):
+        self.assertEqual(one("plugins/captcha/README.md", "x",
+                             removed=["does not create an account or authorize a registration."]), [])
+
     def test_author_is_not_auth(self):
         self.assertEqual(one("blog/authors.py", "x = 1"), [])
         self.assertEqual(one("db/session.py", "x = 1"), [])
@@ -94,7 +98,28 @@ class TestChangesTest(unittest.TestCase):
         self.assertEqual(one("tests/test_a.py", "@pytest.mark.skip(reason='flaky')"), ["risky.test-skipped"])
         self.assertEqual(one("tests/test_a.py", "@unittest.skip('later')"), ["risky.test-skipped"])
         self.assertEqual(one("src/a.spec.ts", "  it.only('works', () => {"), ["risky.test-skipped"])
-        self.assertEqual(one("pkg/a_test.go", "\tt.Skip(\"todo\")"), ["risky.test-skipped"])
+        self.assertEqual(one("pkg/a_test.go", "func TestX(t *testing.T) {", "\tt.Skip(\"todo\")"),
+                         ["risky.test-skipped"])
+        self.assertEqual(one("tests/test_a.py", "def test_x():", "    pytest.skip('later')"),
+                         ["risky.test-skipped"])
+
+    def test_conditional_body_skips_are_fine(self):
+        # From the benchmark: every t.Skip / skipTest it flagged was inside an if.
+        go = ["func TestBaud(t *testing.T) {", '\tif runtime.GOOS != "linux" {', '\t\tt.Skip("linux only")', "\t}"]
+        self.assertEqual(one("pkg/termios_test.go", *go), [])
+        py = ["    def test_lint(self):", "        if shutil.which('shellcheck') is None:",
+              "            self.skipTest('shellcheck missing')"]
+        self.assertEqual(one("tests/test_lint.py", *py), [])
+
+    def test_renamed_in_place_is_not_deleted(self):
+        # From the benchmark: tests renamed to match new behaviour, not removed.
+        self.assertEqual(one("src/nav.test.ts", "  test(\"it's suspended in the org\", () => {",
+                             removed=["  test(\"it's shown in the org's navigation\", () => {"]), [])
+
+    def test_name_with_apostrophe(self):
+        findings, _ = check_risky(files_from(make_diff(
+            "src/nav.test.ts", [], removed=["  test(\"it's shown in the org's nav\", () => {"])))
+        self.assertIn("it's shown in the org's nav", findings[0].message)
 
     def test_conditional_skip_is_fine(self):
         self.assertEqual(one("tests/test_a.py", "@unittest.skipIf(sys.platform == 'win32', 'posix only')",

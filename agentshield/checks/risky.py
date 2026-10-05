@@ -104,6 +104,8 @@ AUTH_GUARD_RE = re.compile(
 
 
 def _auth_findings(f: FileDiff) -> list[Finding]:
+    if f.path.endswith(DOC_EXTS):
+        return []  # docs talk about "authorize" without doing it
     out: list[Finding] = []
     still_there = Counter(_norm(a.text) for a in f.added)
     for r in f.removed:
@@ -180,13 +182,18 @@ def _migration_findings(f: FileDiff) -> list[Finding]:
 
 # -------------------------------------------------------------------- tests
 
+# The name ends at the same quote it started with, so "it's" doesn't cut it short.
 TEST_DEF_RE = re.compile(r"^\s*(?:async\s+)?def\s+(test\w*)\s*\(|"
-                         r"\b(?:it|test)\s*\(\s*['\"`]([^'\"`]+)['\"`]|"
+                         r"\b(?:it|test)\s*\(\s*(['\"`])(.+?)\2|"
                          r"^\s*func\s+(Test\w+)\s*\(")
+# Markers that always disable a test.
 SKIP_RE = re.compile(r"@(pytest\.mark\.skip|unittest\.skip|skip)\b|"
                      r"\b(it|test|describe|context)\.(skip|only)\s*\(|"
-                     r"\b(xit|xdescribe|xtest)\s*\(|@Disabled\b|@Ignore\b|"
-                     r"\bt\.Skip(Now|f)?\s*\(|self\.skipTest\s*\(")
+                     r"\b(xit|xdescribe|xtest)\s*\(|@Disabled\b|@Ignore\b")
+# Skips called inside a test body. Usually conditional ("if not on Linux:
+# skip"), which is fine, so they only count as the test's first statement.
+BODY_SKIP_RE = re.compile(r"\bt\.Skip(Now|f)?\s*\(|self\.skipTest\s*\(|\bpytest\.skip\s*\(")
+TEST_HEADER_RE = re.compile(r"^\s*func\s+Test\w*\s*\(.*\{\s*$|^\s*(async\s+)?def\s+test\w*\s*\(.*:\s*$")
 
 
 def _test_findings(f: FileDiff) -> list[Finding]:
@@ -199,17 +206,27 @@ def _test_findings(f: FileDiff) -> list[Finding]:
                         "moved elsewhere. Deleting failing tests hides bugs.")]
     out: list[Finding] = []
     added_names = {_test_name(a.text) for a in f.added} - {None}
-    for r in f.removed:
-        name = _test_name(r.text)
-        if name and name not in added_names:
-            out.append(Finding(
-                "risky.test-deleted", Severity.MEDIUM, f.path, r.number,
-                f'Test "{name}" was removed.',
-                "Check that it was obsolete, not failing. AI tools sometimes delete "
-                "a failing test instead of fixing the code."))
+    removed_names = {_test_name(r.text): r for r in f.removed} if f.removed else {}
+    removed_names.pop(None, None)
+    gone = [r for name, r in removed_names.items() if name not in added_names]
+    new = added_names - set(removed_names)
+    # Renaming a test in place removes one name and adds another. Only a net
+    # loss of tests in this file is worth flagging.
+    if len(gone) > len(new):
+        names = ", ".join(f'"{_test_name(r.text)}"' for r in gone[:3]) + (" ..." if len(gone) > 3 else "")
+        out.append(Finding(
+            "risky.test-deleted", Severity.MEDIUM, f.path, gone[0].number,
+            f"{len(gone)} test(s) removed but only {len(new)} added in this file: {names}.",
+            "Check that they were obsolete, not failing. AI tools sometimes delete "
+            "a failing test instead of fixing the code."))
     in_doc = _docstring_lines([a.text for a in f.added])
+    prev = ""  # previous non-blank added line
     for a, doc in zip(f.added, in_doc):
         m = None if doc or _is_comment(a.text) else _code_match(SKIP_RE, a.text)
+        if not m and not doc and TEST_HEADER_RE.match(prev):
+            m = _code_match(BODY_SKIP_RE, a.text)  # first statement of a test
+        if a.text.strip():
+            prev = a.text
         if m:
             only = ".only" in m.group(0)
             out.append(Finding(
@@ -223,7 +240,7 @@ def _test_findings(f: FileDiff) -> list[Finding]:
 
 def _test_name(text: str) -> str | None:
     m = TEST_DEF_RE.search(text)
-    return next((g for g in m.groups() if g), None) if m else None
+    return (m.group(1) or m.group(3) or m.group(4)) if m else None
 
 
 def _no_tests_finding(files: list[FileDiff]) -> list[Finding]:
