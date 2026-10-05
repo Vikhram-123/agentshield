@@ -9,7 +9,9 @@ paste a real API key in to "make it work", or delete the failing test
 instead of fixing the bug. AgentShield reads a code change and points at
 those lines, with a 0–100 risk score and a concrete fix for each.
 
-![AgentShield scanning an AI-written pull request](docs/demo.gif)
+[![AgentShield's comment on a real pull request: two hallucinated packages, TLS checks turned off, shell=True and a skipped test](docs/pr-comment.png)](https://github.com/Vikhram-123/agentshield/pull/1)
+
+*The GitHub Action's comment on [a real test PR](https://github.com/Vikhram-123/agentshield/pull/1).*
 
 ## What it catches
 
@@ -54,7 +56,9 @@ agentshield scan --offline           # no network: typo checks only
 agentshield scan --fail-on medium    # exit code 1 on medium+ (for CI)
 ```
 
-Try the demo above yourself: `python examples/demo.py`.
+![AgentShield scanning an AI-written pull request in the terminal](docs/demo.gif)
+
+Try this demo yourself: `python examples/demo.py`.
 
 Exit codes: `0` passed, `1` findings at or above `--fail-on` (default
 `high`), `2` couldn't run (bad config, not a diff, git error).
