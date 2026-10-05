@@ -174,7 +174,7 @@ Vocabulary used here:
 - **Workflow**: a YAML file (`ci.yml` runs the tests on Python 3.11–3.13;
   `agentshield.yml` makes AgentShield scan its own PRs).
 - **Action**: a reusable step. `action.yml` makes this repo usable as
-  `uses: OWNER/agentshield@v1`. It's a **composite** action: plain shell
+  `uses: Vikhram-123/agentshield@v1`. It's a **composite** action: plain shell
   steps, no Docker (#27).
 - **`GITHUB_TOKEN`**: an automatic, short-lived token. `permissions:`
   limits what it can do (`contents: read`, `pull-requests: write`).

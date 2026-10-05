@@ -37,7 +37,7 @@ reached, AgentShield says "couldn't verify" instead of guessing.
 Python 3.11+, no dependencies.
 
 ```bash
-git clone <this repo> && cd agentshield
+git clone https://github.com/Vikhram-123/agentshield && cd agentshield
 python3 -m venv .venv && source .venv/bin/activate
 pip install -e .
 ```
@@ -77,7 +77,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      - uses: OWNER/agentshield@v1   # replace OWNER with the GitHub account
+      - uses: Vikhram-123/agentshield@v1
         with:
           fail-on: high              # high | medium | low | never
 ```

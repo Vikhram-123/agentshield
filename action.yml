@@ -13,7 +13,7 @@
 #         - uses: actions/checkout@v4
 #           with:
 #             fetch-depth: 0     # full history, so the diff vs. base is instant
-#         - uses: OWNER/agentshield@v1
+#         - uses: Vikhram-123/agentshield@v1
 #           with:
 #             fail-on: high
 #
